@@ -28,8 +28,6 @@
     "prettier/prettier": [
       "error",
       {
-        "trailingComma": "all",
-        "arrowParens": "avoid",
         "endOfLine": "auto"
       }
     ],
