@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import DB from "../../DB";
 
 const styles = StyleSheet.create({
   container: {
@@ -18,6 +19,9 @@ const styles = StyleSheet.create({
 });
 
 export default function TabOneScreen() {
+  // This is how to read data
+  // const bucketList = DB.bucketList;
+  // const settings = DB.settings;
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>

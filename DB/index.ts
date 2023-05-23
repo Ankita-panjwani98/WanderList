@@ -1,43 +1,38 @@
-import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
+import BucketList from "./BucketList";
+import Settings from "./Settings";
 
-const db = SQLite.openDatabase("WanderList.db");
+const DATA_FILE = `${FileSystem.documentDirectory}WanderList.json`;
 
-// Why each PRAGMA is set?
-// https://cj.rs/blog/sqlite-pragma-cheatsheet-for-performance-and-consistency/
-const PRAGMAS = [
-  "foreign_keys = ON",
-  "journal_mode = WAL",
-  "synchronous = normal",
-];
+class DB {
+  bucketList = new BucketList([]);
 
-PRAGMAS.forEach((p) => {
-  db.exec([{ sql: `PRAGMA ${p};`, args: [] }], false, () => null);
-});
+  settings = new Settings();
 
-export function insert({ sql }: SQLite.Query) {
-  db.transaction((tx) => {
-    tx.executeSql(sql);
-  });
-}
-
-export function read({ sql }: SQLite.Query) {
-  return new Promise((res, rej) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        sql,
-        [],
-        (_, { rows: { _array } }) => res(_array),
-        (_, err) => {
-          rej(err);
-          return false;
+  constructor() {
+    FileSystem.getInfoAsync(DATA_FILE)
+      .then(({ exists }) => {
+        if (exists) {
+          FileSystem.readAsStringAsync(DATA_FILE).then((rawJson) => {
+            const { bucketList, settings } = JSON.parse(rawJson);
+            this.bucketList = bucketList as BucketList;
+            this.settings = settings as Settings;
+          });
         }
+      })
+      .catch(console.error);
+  }
+
+  async sync() {
+    try {
+      await FileSystem.writeAsStringAsync(
+        DATA_FILE,
+        JSON.stringify({ bucketList: this.bucketList, settings: this.settings })
       );
-    });
-  });
+    } catch (error) {
+      console.error("Error while trying to save data: ", error);
+    }
+  }
 }
 
-// export function update(_: SQLite.Query) {}
-
-// export function remove(_: SQLite.Query) {}
-
-export default db;
+export default new DB();
