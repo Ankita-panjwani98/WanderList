@@ -13,7 +13,7 @@ function TabBarIcon({ color }: { color: string }) {
   );
 }
 
-function HeaderRight() {
+function HeaderRight1() {
   return (
     <Link href="/modal" asChild>
       <Pressable>
@@ -35,9 +35,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "Wander List",
           tabBarIcon: TabBarIcon,
-          headerRight: HeaderRight,
+          headerRight: HeaderRight1,
         }}
       />
       <Tabs.Screen

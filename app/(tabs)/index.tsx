@@ -1,6 +1,9 @@
-import { Dimensions, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-// import DB from "../../DB";
+import * as Location from "expo-location";
+import MarkerMap from "../Marker/MarkerMap";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -20,22 +23,75 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 });
+type Item = {
+  title: string;
+  location: string;
+  visited: boolean;
+  latLong?: { latitude: number; longitude: number };
+};
+
+const demoWanderList: Item[] = [
+  {
+    title: "Spring Bank Park",
+    location: "London, Canada",
+    visited: true,
+  },
+  {
+    title: "CN Tower",
+    location: "Toronto",
+    visited: false,
+  },
+  {
+    title: "Golden Gate Bridge",
+    location: "California",
+    visited: false,
+  },
+  {
+    title: "Niagara Falls",
+    location: "Niagara Falls",
+    visited: true,
+  },
+  {
+    title: "Canadian War Museum",
+    location: "Ottawa",
+    visited: false,
+  },
+];
 
 export default function TabOneScreen() {
-  // This is how to read data
-  // const bucketList = DB.bucketList;
-  // const settings = DB.settings;
+  const [wanderList, setWanderlist] = useState(demoWanderList);
 
-  const { width, height } = Dimensions.get("window");
-  const ASPECT_RATIO = width / height;
-  const LATITUDE_DELTA = 0.02;
-  const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+  const geoCode = async (placeAddress: string) => {
+    const geoCodedLocation = await Location.geocodeAsync(placeAddress);
+    return geoCodedLocation[0];
+  };
+
+  const updatedBucketList = async () => {
+    const updatedArray = await Promise.all(
+      wanderList.map(async (item) => {
+        const geocodedLocation = await geoCode(item.location);
+        return {
+          ...item,
+          latLong: {
+            latitude: geocodedLocation.latitude,
+            longitude: geocodedLocation.longitude,
+          },
+        };
+      })
+    );
+
+    setWanderlist(updatedArray);
+  };
+
+  useEffect(() => {
+    updatedBucketList();
+  }, []);
 
   const INITIAL_POSITION = {
-    latitude: 42.9849,
-    longitude: -81.2453,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
+    latitude: 42.9877866,
+    longitude: -81.2459254,
+    latitudeDelta: 8,
+    longitudeDelta: 8,
   };
 
   return (
@@ -44,6 +100,11 @@ export default function TabOneScreen() {
         style={styles.map}
         provider={PROVIDER_GOOGLE}
         initialRegion={INITIAL_POSITION}
+      >
+        {wanderList.map((item, index) => {
+          return <MarkerMap key={index} item={item} index={index} />;
+        })}
+      </MapView>
       />
     </View>
   );
