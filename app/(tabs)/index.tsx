@@ -4,6 +4,7 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import MarkerMap from "../Marker/MarkerMap";
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -104,6 +105,7 @@ export default function TabOneScreen() {
           return <MarkerMap key={index} item={item} index={index} />;
         })}
       </MapView>
+      />
     </View>
   );
 }
