@@ -1,27 +1,61 @@
-import { StyleSheet, View, Text } from "react-native";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import BucketListItem from "../BucketListItem";
+import BucketList from "../../DB/BucketList";
+import Item from "../../DB/Item";
 
 export default function TabTwoScreen() {
+  const [bucketList, setBucketList] = useState(new BucketList([]));
+
+  const route = useRoute();
+  const newItem = route.params?.newItem;
+
+  useEffect(() => {
+    if (newItem) {
+      const item = new Item(newItem);
+      setBucketList((prevBucketList) => {
+        const updatedBucketList = new BucketList([
+          ...prevBucketList.items,
+          item,
+        ]);
+        return updatedBucketList;
+      });
+    }
+  }, [newItem, setBucketList]);
+
+  const updateItem = (updatedItem) => {
+    const updatedList = bucketList.items.map((item) =>
+      item.id === updatedItem.id ? updatedItem : item
+    );
+    setBucketList(new BucketList(updatedList));
+  };
+
+  const handleDeleteItem = (itemToDelete) => {
+    const updatedList = bucketList.items.filter(
+      (item) => item.id !== itemToDelete.id
+    );
+    setBucketList(new BucketList(updatedList));
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "flex-start",
+      padding: 16,
+    },
+  });
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} />
+      {bucketList.items.map((item) => (
+        <BucketListItem
+          key={item.id}
+          item={item}
+          onUpdate={updateItem}
+          onDelete={handleDeleteItem}
+        />
+      ))}
     </View>
   );
 }

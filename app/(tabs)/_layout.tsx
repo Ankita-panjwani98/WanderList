@@ -29,6 +29,22 @@ function HeaderRight1() {
   );
 }
 
+function HeaderRight2() {
+  return (
+    <Link href="/addItemModal" asChild>
+      <Pressable>
+        {({ pressed }) => (
+          <FontAwesome
+            name="plus-circle"
+            size={25}
+            style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+          />
+        )}
+      </Pressable>
+    </Link>
+  );
+}
+
 export default function TabLayout() {
   return (
     <Tabs>
@@ -45,6 +61,7 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: TabBarIcon,
+          headerRight: HeaderRight2,
         }}
       />
     </Tabs>
