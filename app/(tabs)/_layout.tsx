@@ -48,7 +48,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="listTab"
         options={{
           title: "List",
           tabBarIcon: TabBarIcon, // TODO Change Icon

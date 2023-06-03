@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import SpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
-import "../DB";
+import { DataProvider } from "../context/DataContext";
 
 // eslint-disable-next-line camelcase
 export const unstable_settings = {
@@ -12,12 +12,17 @@ export const unstable_settings = {
 
 function RootLayoutNav() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="infoModal" options={{ presentation: "modal" }} />
-      <Stack.Screen name="addItemModal" options={{ presentation: "modal" }} />
-      <Stack.Screen name="editItemModal" options={{ presentation: "modal" }} />
-    </Stack>
+    <DataProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="infoModal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="addItemModal" options={{ presentation: "modal" }} />
+        <Stack.Screen
+          name="editItemModal"
+          options={{ presentation: "modal" }}
+        />
+      </Stack>
+    </DataProvider>
   );
 }
 

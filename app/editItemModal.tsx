@@ -1,14 +1,15 @@
 import { useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
   // Switch,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import Item from "../DB/Item";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import useBucketListContext from "../context/DataContext";
+import BucketList from "../DB/BucketList";
 
 const styles = StyleSheet.create({
   container: {
@@ -50,13 +51,15 @@ const styles = StyleSheet.create({
 });
 
 export default function EditItemModal() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { item, updateItem } = route.params;
+  const { bucketList, setBucketList } = useBucketListContext();
+  const router = useRouter();
+  const { itemId } = useLocalSearchParams();
 
-  const [title, setTitle] = useState(item.title);
-  const [address, setAddress] = useState(item.address);
-  const [coordinates, setCoordinates] = useState(item.coordinates || []);
+  const item = bucketList.items.find((i) => i.id === itemId);
+
+  const [title, setTitle] = useState(item?.title);
+  const [address, setAddress] = useState(item?.address);
+  // const [coordinates, setCoordinates] = useState(item.coordinates || []);
   // const [hasVisited, setHasVisited] = useState(item.hasVisited);
   // const [description, setDescription] = useState(item.description || "");
   // const [rating, setRating] = useState(item.rating || 0);
@@ -65,24 +68,22 @@ export default function EditItemModal() {
   // const [favourite, setFavourite] = useState(item.favourite || false);
 
   const handleSave = () => {
-    const updatedItem = new Item({
-      id: item.id,
-      title,
-      address,
-      // hasVisited,
-      // coordinates,
-      // description,
-      // rating,
-      // priority,
-      // tag,
-      // favourite,
-      createdOn: item.createdOn,
-      updatedOn: Date.now(),
-    });
+    // TODO: Check if co-ordinates should be manually updated
 
-    updateItem(updatedItem);
+    if (!item || !title || !address) return;
 
-    navigation.goBack();
+    const updatedItem = {
+      ...item,
+      ...{ title, address, updateOn: Date.now() },
+    };
+
+    const updatedList = bucketList.items.map((i) =>
+      i.id === updatedItem.id ? updatedItem : i
+    );
+
+    setBucketList(new BucketList(updatedList));
+
+    router.back();
   };
 
   return (
@@ -108,18 +109,16 @@ export default function EditItemModal() {
         //   <Text>Visited/Opened:</Text>
         //   <Switch value={hasVisited} onValueChange={setHasVisited} />
         // </View>
-      }
-
-      <TextInput
-        style={styles.input}
-        value={coordinates.join(", ")}
-        onChangeText={(text) =>
-          setCoordinates(text.split(",").map((coord) => Number(coord.trim())))
-        }
-        placeholder="Coordinates (e.g., latitude, longitude)"
-      />
-
-      {
+        //
+        // <TextInput
+        //   style={styles.input}
+        //   value={coordinates.join(", ")}
+        //   onChangeText={(text) =>
+        //     setCoordinates(text.split(",").map((coord) => Number(coord.trim())))
+        //   }
+        //   placeholder="Coordinates (e.g., latitude, longitude)"
+        // />
+        //
         // <TextInput
         //   style={styles.input}
         //   value={description}

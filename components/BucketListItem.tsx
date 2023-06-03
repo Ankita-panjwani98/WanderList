@@ -1,5 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import BucketList from "../DB/BucketList";
+import Item from "../DB/Item";
+import useBucketListContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -48,15 +51,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function BucketListItem({ item, onUpdate, onDelete }) {
-  const navigation = useNavigation();
+export default function BucketListItem({ item }: { item: Item }) {
+  const { bucketList, setBucketList } = useBucketListContext();
 
-  const handleEditItem = () => {
-    navigation.navigate("editItemModal", { item, updateItem: onUpdate });
+  const router = useRouter();
+
+  const handleEditItem = (i: Item) => {
+    router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
   };
 
-  const handleDeleteItem = () => {
-    onDelete(item);
+  const handleDeleteItem = (i: Item) => {
+    const updatedList = bucketList.items.filter((x) => x.id !== i.id);
+    setBucketList(new BucketList(updatedList));
   };
 
   return (
@@ -67,24 +73,25 @@ export default function BucketListItem({ item, onUpdate, onDelete }) {
         {item.hasVisited ? "Visited" : "Not Visited"}
       </Text>
 
-      {/* Display additional fields */}
-      {item.coordinates && (
-        <Text>Coordinates: {item.coordinates.join(", ")}</Text>
-      )}
+      {/* Display additional fields
       {item.description && <Text>Description: {item.description}</Text>}
       {item.rating && <Text>Rating: {item.rating}/5</Text>}
       {item.priority && <Text>Priority: {item.priority}/3</Text>}
       {item.tag && <Text>Tag: {item.tag}</Text>}
       {item.favourite && <Text>Favourite: Yes</Text>}
+      */}
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditItem}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => handleEditItem(item)}
+        >
           <Text style={styles.buttonText}>Edit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={handleDeleteItem}
+          onPress={() => handleDeleteItem(item)}
         >
           <Text style={styles.buttonText}>Delete</Text>
         </TouchableOpacity>
