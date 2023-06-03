@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
 export default function MapTab() {
   const { bucketList } = useDataContext();
 
+  // TODO: Change this to occupy all the markers
   const INITIAL_POSITION = {
     latitude: 42.9877866,
     longitude: -81.2459254,

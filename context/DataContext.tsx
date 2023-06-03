@@ -7,12 +7,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import * as FileSystem from "expo-file-system";
+import { documentDirectory } from "expo-file-system";
 
 import BucketList from "../DB/BucketList";
 import Settings from "../DB/Settings";
+import readFile from "../utils/readFile";
+import writeFile from "../utils/writeFile";
 
-const DATA_FILE = `${FileSystem.documentDirectory}WanderList.json`;
+const DATA_FILE = `${documentDirectory}WanderList.json`;
 
 export interface DataContext {
   bucketList: BucketList;
@@ -29,14 +31,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [settings, _setSettings] = useState<Settings>(new Settings());
 
   useEffect(() => {
-    FileSystem.getInfoAsync(DATA_FILE)
-      .then(({ exists }) => {
-        if (exists) {
-          FileSystem.readAsStringAsync(DATA_FILE).then((rawJson) => {
-            const { bucketList: b, settings: s } = JSON.parse(rawJson);
-            _setBucketList(b);
-            _setSettings(s);
-          });
+    readFile(DATA_FILE)
+      .then((data) => {
+        if (data) {
+          const { bucketList: b, settings: s } = data;
+          _setBucketList(b);
+          _setSettings(s);
         }
       })
       .catch((err) => {
@@ -52,13 +52,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
       newBucketList?: BucketList;
       newSettings?: Settings;
     }) => {
-      FileSystem.writeAsStringAsync(
-        DATA_FILE,
-        JSON.stringify({
-          bucketList: newBucketList || bucketList, // Use old value if no new supplied
-          settings: newSettings || settings,
-        })
-      ).catch((err) => {
+      const data = JSON.stringify({
+        // Use old value if no new supplied
+        bucketList: newBucketList || bucketList,
+        settings: newSettings || settings,
+      });
+
+      writeFile(DATA_FILE, data).catch((err) => {
         throw new Error(err);
       });
     },
