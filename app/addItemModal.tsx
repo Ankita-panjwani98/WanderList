@@ -20,8 +20,8 @@ export default function AddNewItemModalScreen() {
     undefined
   );
   const [description, setDescription] = useState("");
-  const [rating, setRating] = useState<number | undefined>(undefined);
-  const [priority, setPriority] = useState<number | undefined>(undefined);
+  const [rating, setRating] = useState(0);
+  const [priority, setPriority] = useState(0);
   const [tag, setTag] = useState("");
   const [favourite, setFavourite] = useState(false);
   const navigation = useNavigation();
