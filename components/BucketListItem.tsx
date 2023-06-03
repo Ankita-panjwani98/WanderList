@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
@@ -6,20 +7,42 @@ import useBucketListContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   itemContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
+    shadowColor: "#171717",
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 10,
+  },
+  itemSubContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  itemDetailsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#6a6b67",
     marginBottom: 4,
   },
   location: {
     fontSize: 16,
+    color: "#666666",
     marginBottom: 4,
   },
   visited: {
-    fontSize: 16,
-    color: "gray",
+    fontSize: 14,
+    paddingRight: 10,
+    color: "#666666",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -27,7 +50,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   editButton: {
-    backgroundColor: "grey",
+    backgroundColor: "#67943a",
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 10,
@@ -36,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   deleteButton: {
-    backgroundColor: "red",
+    backgroundColor: "#e8645d",
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 10,
@@ -53,7 +76,7 @@ const styles = StyleSheet.create({
 
 export default function BucketListItem({ item }: { item: Item }) {
   const { bucketList, setBucketList } = useBucketListContext();
-
+  const [isEnabled, setIsEnabled] = useState(false);
   const router = useRouter();
 
   const handleEditItem = (i: Item) => {
@@ -67,19 +90,30 @@ export default function BucketListItem({ item }: { item: Item }) {
 
   return (
     <View style={styles.itemContainer}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.location}>{item.address}</Text>
-      <Text style={styles.visited}>
-        {item.hasVisited ? "Visited" : "Not Visited"}
-      </Text>
+      <View style={styles.itemSubContainer}>
+        <View style={styles.itemDetailsContainer}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.location}>{item.address}</Text>
+        </View>
 
-      {/* Display additional fields
+        <View>
+          <Switch
+            trackColor={{ false: "white", true: "#66666" }}
+            thumbColor={isEnabled ? "#ccf0d9" : "white"}
+          />
+          <Text style={styles.visited}>
+            {item.hasVisited ? "Visited" : "Not Visited"}
+          </Text>
+        </View>
+
+        {/* Display additional fields
       {item.description && <Text>Description: {item.description}</Text>}
       {item.rating && <Text>Rating: {item.rating}/5</Text>}
       {item.priority && <Text>Priority: {item.priority}/3</Text>}
       {item.tag && <Text>Tag: {item.tag}</Text>}
       {item.favourite && <Text>Favourite: Yes</Text>}
       */}
+      </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
