@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
-import useBucketListContext from "../context/DataContext";
+import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 });
 
 export default function BucketListItem({ item }: { item: Item }) {
-  const { bucketList, setBucketList } = useBucketListContext();
+  const { bucketList, setBucketList } = useDataContext();
 
   const router = useRouter();
 

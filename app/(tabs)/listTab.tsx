@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import BucketListItem from "../../components/BucketListItem";
-import useBucketListContext from "../../context/DataContext";
+import useDataContext from "../../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 });
 
 export default function ListTab() {
-  const { bucketList } = useBucketListContext();
+  const { bucketList } = useDataContext();
 
   return (
     <View style={styles.container}>

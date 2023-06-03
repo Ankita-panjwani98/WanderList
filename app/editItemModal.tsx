@@ -8,7 +8,7 @@ import {
   // Switch,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import useBucketListContext from "../context/DataContext";
+import useDataContext from "../context/DataContext";
 import BucketList from "../DB/BucketList";
 
 const styles = StyleSheet.create({
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 });
 
 export default function EditItemModal() {
-  const { bucketList, setBucketList } = useBucketListContext();
+  const { bucketList, setBucketList } = useDataContext();
   const router = useRouter();
   const { itemId } = useLocalSearchParams();
 
