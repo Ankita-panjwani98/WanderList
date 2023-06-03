@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import * as Location from "expo-location";
-import MarkerMap from "../Marker/MarkerMap";
-
+import ItemMarker from "../../components/Marker";
+// import { geocodeAsync } from "expo-location";
 
 const styles = StyleSheet.create({
   container: {
@@ -32,60 +30,41 @@ type Item = {
 
 const demoWanderList: Item[] = [
   {
-    title: "Spring Bank Park",
+    latLong: { latitude: 42.9877866, longitude: -81.2459254 },
     location: "London, Canada",
+    title: "Spring Bank Park",
     visited: true,
   },
   {
-    title: "CN Tower",
+    latLong: { latitude: 43.6516053, longitude: -79.3831254 },
     location: "Toronto",
+    title: "CN Tower",
     visited: false,
   },
   {
-    title: "Golden Gate Bridge",
+    latLong: { latitude: 38.577, longitude: -121.4949 },
     location: "California",
+    title: "Golden Gate Bridge",
     visited: false,
   },
   {
-    title: "Niagara Falls",
+    latLong: { latitude: 43.096067, longitude: -79.055462 },
     location: "Niagara Falls",
+    title: "Niagara Falls",
     visited: true,
   },
   {
-    title: "Canadian War Museum",
+    latLong: { latitude: 45.4200146, longitude: -75.6895387 },
     location: "Ottawa",
+    title: "Canadian War Museum",
     visited: false,
   },
 ];
 
 export default function TabOneScreen() {
-  const [wanderList, setWanderlist] = useState(demoWanderList);
-
-  const geoCode = async (placeAddress: string) => {
-    const geoCodedLocation = await Location.geocodeAsync(placeAddress);
-    return geoCodedLocation[0];
-  };
-
-  const updatedBucketList = async () => {
-    const updatedArray = await Promise.all(
-      wanderList.map(async (item) => {
-        const geocodedLocation = await geoCode(item.location);
-        return {
-          ...item,
-          latLong: {
-            latitude: geocodedLocation.latitude,
-            longitude: geocodedLocation.longitude,
-          },
-        };
-      })
-    );
-
-    setWanderlist(updatedArray);
-  };
-
-  useEffect(() => {
-    updatedBucketList();
-  }, []);
+  // NOTE: To get geocode from a location, do following:
+  // const geoCodedLocation = await geocodeAsync(placeAddress);
+  // return geoCodedLocation[0];
 
   const INITIAL_POSITION = {
     latitude: 42.9877866,
@@ -101,11 +80,10 @@ export default function TabOneScreen() {
         provider={PROVIDER_GOOGLE}
         initialRegion={INITIAL_POSITION}
       >
-        {wanderList.map((item, index) => {
-          return <MarkerMap key={index} item={item} index={index} />;
-        })}
+        {demoWanderList.map((item, index) => (
+          <ItemMarker key={item.title} item={item} index={index} />
+        ))}
       </MapView>
-      />
     </View>
   );
 }

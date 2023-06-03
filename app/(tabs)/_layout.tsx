@@ -13,29 +13,19 @@ function TabBarIcon({ color }: { color: string }) {
   );
 }
 
-function HeaderRight1() {
+function Header({
+  href,
+  icon,
+}: {
+  href: string;
+  icon: keyof typeof FontAwesome.glyphMap;
+}) {
   return (
-    <Link href="/modal" asChild>
+    <Link href={href} asChild>
       <Pressable>
         {({ pressed }) => (
           <FontAwesome
-            name="info-circle"
-            size={25}
-            style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          />
-        )}
-      </Pressable>
-    </Link>
-  );
-}
-
-function HeaderRight2() {
-  return (
-    <Link href="/addItemModal" asChild>
-      <Pressable>
-        {({ pressed }) => (
-          <FontAwesome
-            name="plus-circle"
+            name={icon}
             size={25}
             style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
           />
@@ -51,17 +41,19 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Wander List",
-          tabBarIcon: TabBarIcon,
-          headerRight: HeaderRight1,
+          title: "Map",
+          tabBarIcon: TabBarIcon, // TODO: Change Icon
+          headerRight: () =>
+            Header({ href: "/infoModal", icon: "info-circle" }),
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
-          title: "Tab Two",
-          tabBarIcon: TabBarIcon,
-          headerRight: HeaderRight2,
+          title: "List",
+          tabBarIcon: TabBarIcon, // TODO Change Icon
+          headerRight: () =>
+            Header({ href: "/addItemModal", icon: "plus-circle" }),
         }}
       />
     </Tabs>
