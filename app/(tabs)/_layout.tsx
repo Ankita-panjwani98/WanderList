@@ -1,14 +1,25 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { Pressable, Image } from "react-native";
 
-function TabBarIcon({ color }: { color: string }) {
+function MapIcon() {
   return (
     <FontAwesome
-      size={28}
+      size={30}
       style={{ marginBottom: -3 }}
-      name="code"
-      color={color}
+      name="map-marker"
+      color="#68bf11"
+    />
+  );
+}
+
+function ListIcon() {
+  return (
+    <FontAwesome
+      size={26}
+      style={{ marginBottom: -3 }}
+      name="list-ul"
+      color="#177a29"
     />
   );
 }
@@ -42,7 +53,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Map",
-          tabBarIcon: TabBarIcon, // TODO: Change Icon
+          tabBarIcon: MapIcon, // TODO: Change Icon
           headerRight: () =>
             Header({ href: "/infoModal", icon: "info-circle" }),
         }}
@@ -51,7 +62,7 @@ export default function TabLayout() {
         name="listTab"
         options={{
           title: "List",
-          tabBarIcon: TabBarIcon, // TODO Change Icon
+          tabBarIcon: ListIcon, // TODO Change Icon
           headerRight: () =>
             Header({ href: "/addItemModal", icon: "plus-circle" }),
         }}
