@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
@@ -49,22 +50,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   editButton: {
-    backgroundColor: "#67943a",
-    padding: 10,
-    borderRadius: 5,
     marginHorizontal: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
   },
   deleteButton: {
-    backgroundColor: "#e8645d",
-    padding: 10,
-    borderRadius: 5,
     marginHorizontal: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
   },
   buttonText: {
     color: "white",
@@ -94,31 +83,39 @@ export default function BucketListItem({ item }: { item: Item }) {
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.location}>{item.address}</Text>
         </View>
-
-        {/* Display additional fields
-      {item.description && <Text>Description: {item.description}</Text>}
-      {item.rating && <Text>Rating: {item.rating}/5</Text>}
-      {item.priority && <Text>Priority: {item.priority}/3</Text>}
-      {item.tag && <Text>Tag: {item.tag}</Text>}
-      {item.favourite && <Text>Favourite: Yes</Text>}
-      */}
-
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => handleEditItem(item)}
           >
-            <Text style={styles.buttonText}>Edit</Text>
+            <FontAwesome
+              size={30}
+              style={{ marginBottom: -3 }}
+              name="pencil"
+              color="#6D9C3F"
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.deleteButton}
             onPress={() => handleDeleteItem(item)}
           >
-            <Text style={styles.buttonText}>Delete</Text>
+            <FontAwesome
+              size={30}
+              style={{ marginBottom: -3 }}
+              name="trash"
+              color="#db5c40"
+            />
           </TouchableOpacity>
         </View>
       </View>
+      {/* Display additional fields
+      {item.description && <Text>Description: {item.description}</Text>}
+      {item.rating && <Text>Rating: {item.rating}/5</Text>}
+      {item.priority && <Text>Priority: {item.priority}/3</Text>}
+      {item.tag && <Text>Tag: {item.tag}</Text>}
+      {item.favourite && <Text>Favourite: Yes</Text>}
+      */}
     </View>
   );
 }

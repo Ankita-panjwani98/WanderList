@@ -19,7 +19,7 @@ function ListIcon() {
       size={26}
       style={{ marginBottom: -3 }}
       name="list-ul"
-      color="#e8692a"
+      color="#177a29"
     />
   );
 }
