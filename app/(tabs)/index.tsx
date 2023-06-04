@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import ItemMarker from "../../components/Marker";
-import useBucketListContext from "../../context/DataContext";
+import useDataContext from "../../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -23,8 +23,9 @@ const styles = StyleSheet.create({
 });
 
 export default function MapTab() {
-  const { bucketList } = useBucketListContext();
+  const { bucketList } = useDataContext();
 
+  // TODO: Change this to occupy all the markers
   const INITIAL_POSITION = {
     latitude: 42.9877866,
     longitude: -81.2459254,

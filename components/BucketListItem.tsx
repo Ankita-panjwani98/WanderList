@@ -1,9 +1,8 @@
-import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
-import useBucketListContext from "../context/DataContext";
+import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -75,8 +74,8 @@ const styles = StyleSheet.create({
 });
 
 export default function BucketListItem({ item }: { item: Item }) {
-  const { bucketList, setBucketList } = useBucketListContext();
-  const [isEnabled, setIsEnabled] = useState(false);
+  const { bucketList, setBucketList } = useDataContext();
+
   const router = useRouter();
 
   const handleEditItem = (i: Item) => {
@@ -96,16 +95,6 @@ export default function BucketListItem({ item }: { item: Item }) {
           <Text style={styles.location}>{item.address}</Text>
         </View>
 
-        <View>
-          <Switch
-            trackColor={{ false: "white", true: "#66666" }}
-            thumbColor={isEnabled ? "#ccf0d9" : "white"}
-          />
-          <Text style={styles.visited}>
-            {item.hasVisited ? "Visited" : "Not Visited"}
-          </Text>
-        </View>
-
         {/* Display additional fields
       {item.description && <Text>Description: {item.description}</Text>}
       {item.rating && <Text>Rating: {item.rating}/5</Text>}
@@ -113,22 +102,22 @@ export default function BucketListItem({ item }: { item: Item }) {
       {item.tag && <Text>Tag: {item.tag}</Text>}
       {item.favourite && <Text>Favourite: Yes</Text>}
       */}
-      </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => handleEditItem(item)}
-        >
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => handleEditItem(item)}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => handleDeleteItem(item)}
-        >
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDeleteItem(item)}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

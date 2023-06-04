@@ -12,7 +12,7 @@ import {
 import { geocodeAsync } from "expo-location";
 import { useRouter } from "expo-router";
 import generateUUID from "../utils/generateUUID";
-import useBucketListContext from "../context/DataContext";
+import useDataContext from "../context/DataContext";
 import Item from "../DB/Item";
 import BucketList from "../DB/BucketList";
 
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 });
 
 export default function AddNewItemModalScreen() {
-  const { bucketList, setBucketList } = useBucketListContext();
+  const { bucketList, setBucketList } = useDataContext();
   const router = useRouter();
 
   const [title, setTitle] = useState("");
