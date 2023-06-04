@@ -1,12 +1,13 @@
 import { Marker } from "react-native-maps";
+import Item from "../DB/Item";
 // import { Callout, Marker } from "react-native-maps";
 // import { Image, Text, View } from "react-native";
 
-export default function ItemMarker({ item }) {
+export default function ItemMarker({ item }: { item: Item }) {
   return (
     <Marker
       key={item.title}
-      coordinate={item.latLong || { latitude: 0, longitude: 0 }}
+      coordinate={item.coordinates}
       pinColor="green"
       description={item.title}
     >

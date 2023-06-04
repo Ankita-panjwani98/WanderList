@@ -3,14 +3,18 @@ import { StatusBar } from "expo-status-bar";
 import {
   Platform,
   StyleSheet,
+  Text,
   // Switch,
   TextInput,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { geocodeAsync } from "expo-location";
+import { useRouter } from "expo-router";
+import generateUUID from "../utils/generateUUID";
+import useDataContext from "../context/DataContext";
 import Item from "../DB/Item";
+import BucketList from "../DB/BucketList";
 
 const styles = StyleSheet.create({
   container: {
@@ -67,25 +71,26 @@ const styles = StyleSheet.create({
 });
 
 export default function AddNewItemModalScreen() {
+  const { bucketList, setBucketList } = useDataContext();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   // const [hasVisited, setHasVisited] = useState(false);
-  const [coordinates, setCoordinates] = useState<[number, number] | undefined>(
-    undefined
-  );
+  // const [coordinates, setCoordinates] = useState<[number, number] | undefined>(
+  //   undefined,
+  // );
   // const [description, setDescription] = useState("");
   // const [rating, setRating] = useState<number | undefined>();
   // const [priority, setPriority] = useState<number | undefined>();
   // const [tag, setTag] = useState("");
   // const [favourite, setFavourite] = useState(false);
 
-  const navigation = useNavigation();
-
   const resetInputs = () => {
     setTitle("");
     setAddress("");
     // setHasVisited(false);
-    setCoordinates(undefined);
+    // setCoordinates(undefined);
     // setDescription("");
     // setRating(undefined);
     // setPriority(undefined);
@@ -94,26 +99,31 @@ export default function AddNewItemModalScreen() {
   };
 
   const handleAddItem = () => {
-    const newItem = new Item({
-      title,
-      address,
-      // hasVisited,
-      coordinates,
-      // description,
-      // rating,
-      // priority,
-      // tag,
-      // favourite,
+    geocodeAsync(address).then(([coordinates]) => {
+      const newItem = new Item({
+        id: generateUUID(),
+        title,
+        address,
+        coordinates,
+        createdOn: Date.now(),
+        // hasVisited,
+        // description,
+        // rating,
+        // priority,
+        // tag,
+        // favourite,
+      });
+      const newBucketList = new BucketList(bucketList.items.concat(newItem));
+      setBucketList(newBucketList);
+
+      // TODO: Go to map from here maybe?
+      router.push("listTab");
     });
-
-    resetInputs();
-
-    navigation.navigate("two", { newItem });
   };
 
   const handleCancel = () => {
     resetInputs();
-    navigation.goBack();
+    router.back();
   };
 
   return (
