@@ -32,11 +32,15 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "gray",
+    borderBottomWidth: 1,
+    borderColor: "lightgray",
     padding: 10,
     width: "80%",
     marginBottom: 10,
+  },
+  addressInput: {
+    borderColor: "black",
+    color: "black",
   },
   switchContainer: {
     flexDirection: "row",
@@ -50,7 +54,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 5,
     marginLeft: 10,
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: "orange",
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
@@ -66,6 +70,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
+    fontWeight: "bold",
+  },
+  errorView: {
+    color: "red",
+    maxWidth: "80%",
+    padding: 10,
+  },
+  errorText: {
+    color: "red",
     fontWeight: "bold",
   },
 });
@@ -86,6 +99,8 @@ export default function AddNewItemModalScreen() {
   // const [tag, setTag] = useState("");
   // const [favourite, setFavourite] = useState(false);
 
+  const [error, setError] = useState("");
+
   const resetInputs = () => {
     setTitle("");
     setAddress("");
@@ -99,26 +114,49 @@ export default function AddNewItemModalScreen() {
   };
 
   const handleAddItem = () => {
-    geocodeAsync(address).then(([coordinates]) => {
-      const newItem = new Item({
-        id: generateUUID(),
-        title,
-        address,
-        coordinates,
-        createdOn: Date.now(),
-        // hasVisited,
-        // description,
-        // rating,
-        // priority,
-        // tag,
-        // favourite,
-      });
-      const newBucketList = new BucketList(bucketList.items.concat(newItem));
-      setBucketList(newBucketList);
+    setError("");
 
-      // TODO: Go to map from here maybe?
-      router.push("listTab");
-    });
+    if (!address) {
+      setError("Address input is required!");
+      return;
+    }
+
+    geocodeAsync(address)
+      .then((data) => {
+        const [coordinates] = data;
+
+        if (!coordinates) {
+          setError(
+            "Location coordinates could not be fetched! Please try with a different address."
+          );
+          return;
+        }
+
+        const newItem = new Item({
+          id: generateUUID(),
+          title: title || address,
+          address,
+          coordinates,
+          createdOn: Date.now(),
+          // hasVisited,
+          // description,
+          // rating,
+          // priority,
+          // tag,
+          // favourite,
+        });
+        const newBucketList = new BucketList(bucketList.items.concat(newItem));
+        setBucketList(newBucketList);
+
+        // TODO: Go to map from here maybe?
+        router.push("listTab");
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(
+          "Unexpected error occured while fetching coordinates, please try again later!"
+        );
+      });
   };
 
   const handleCancel = () => {
@@ -128,17 +166,15 @@ export default function AddNewItemModalScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add New Item</Text>
-      <View style={styles.separator} />
-
       <TextInput
         style={styles.input}
         value={title}
         onChangeText={setTitle}
         placeholder="Title"
       />
+
       <TextInput
-        style={styles.input}
+        style={[styles.input, styles.addressInput]}
         value={address}
         onChangeText={setAddress}
         placeholder="Address"
@@ -188,6 +224,10 @@ export default function AddNewItemModalScreen() {
         <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
           <Text style={styles.buttonText}>Add</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.errorView}>
+        <Text style={{ color: "red" }}> {error} </Text>
       </View>
 
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
