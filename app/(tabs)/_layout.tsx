@@ -8,7 +8,7 @@ function MapIcon() {
       size={30}
       style={{ marginBottom: -3 }}
       name="location-arrow"
-      color="#4eed76"
+      color="green"
     />
   );
 }
@@ -19,7 +19,7 @@ function ListIcon() {
       size={26}
       style={{ marginBottom: -3 }}
       name="list-ul"
-      color="#f0ab2b"
+      color="orange"
     />
   );
 }
@@ -54,8 +54,6 @@ export default function TabLayout() {
         options={{
           title: "Map",
           tabBarIcon: MapIcon,
-          headerRight: () =>
-            Header({ href: "/infoModal", icon: "info-circle" }),
         }}
       />
       <Tabs.Screen
