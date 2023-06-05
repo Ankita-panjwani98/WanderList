@@ -16,7 +16,10 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="infoModal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="addItemModal" options={{ presentation: "modal" }} />
+        <Stack.Screen
+          name="addItemModal"
+          options={{ headerTitle: "Add Item", presentation: "modal" }}
+        />
         <Stack.Screen
           name="editItemModal"
           options={{ presentation: "modal" }}
