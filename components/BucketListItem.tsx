@@ -106,7 +106,23 @@ export default function BucketListItem({ item }: { item: Item }) {
   };
 
   const handleClearList = () => {
-    setBucketList(new BucketList([]));
+    Alert.alert(
+      "Clear List",
+      "Are you sure you want to delete all items from the list?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete All",
+          style: "destructive",
+          onPress: () => {
+            setBucketList(new BucketList([]));
+          },
+        },
+      ]
+    );
   };
 
   return (
