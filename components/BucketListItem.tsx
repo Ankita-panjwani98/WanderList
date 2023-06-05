@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    maxWidth: "75%",
   },
   title: {
     fontSize: 18,
@@ -72,8 +73,24 @@ export default function BucketListItem({ item }: { item: Item }) {
   };
 
   const handleDeleteItem = (i: Item) => {
-    const updatedList = bucketList.items.filter((x) => x.id !== i.id);
-    setBucketList(new BucketList(updatedList));
+    Alert.alert(
+      "Delete Item",
+      `Are you sure you want to delete ${i.title} item?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            const updatedList = bucketList.items.filter((x) => x.id !== i.id);
+            setBucketList(new BucketList(updatedList));
+          },
+        },
+      ]
+    );
   };
 
   return (
