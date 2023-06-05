@@ -68,11 +68,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-
-  clearButton: {
-    marginVertical: 10,
-    alignSelf: "center",
-  },
 });
 
 export default function BucketListItem({ item }: { item: Item }) {
@@ -103,10 +98,6 @@ export default function BucketListItem({ item }: { item: Item }) {
         },
       ]
     );
-  };
-
-  const handleClearList = () => {
-    setBucketList(new BucketList([]));
   };
 
   return (
@@ -149,12 +140,6 @@ export default function BucketListItem({ item }: { item: Item }) {
       {item.tag && <Text>Tag: {item.tag}</Text>}
       {item.favourite && <Text>Favourite: Yes</Text>}
       */}
-
-      <Button
-        title="Clear List"
-        onPress={handleClearList}
-        style={styles.clearButton}
-      />
     </View>
   );
 }
