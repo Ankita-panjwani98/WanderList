@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import BucketList from "../DB/BucketList";
@@ -60,6 +60,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+
+  clearButton: {
+    marginVertical: 10,
+    alignSelf: "center",
+  },
 });
 
 export default function BucketListItem({ item }: { item: Item }) {
@@ -74,6 +79,10 @@ export default function BucketListItem({ item }: { item: Item }) {
   const handleDeleteItem = (i: Item) => {
     const updatedList = bucketList.items.filter((x) => x.id !== i.id);
     setBucketList(new BucketList(updatedList));
+  };
+
+  const handleClearList = () => {
+    setBucketList(new BucketList([]));
   };
 
   return (
@@ -116,6 +125,12 @@ export default function BucketListItem({ item }: { item: Item }) {
       {item.tag && <Text>Tag: {item.tag}</Text>}
       {item.favourite && <Text>Favourite: Yes</Text>}
       */}
+
+<Button
+        title="Clear List"
+        onPress={handleClearList}
+        style={styles.clearButton}
+      />
     </View>
   );
 }
