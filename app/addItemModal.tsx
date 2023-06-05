@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
+
 import {
   Platform,
   StyleSheet,
   Text,
-  // Switch,
   TextInput,
   TouchableOpacity,
   View,
@@ -18,13 +18,16 @@ import BucketList from "../DB/BucketList";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: "20%",
+    width: "70%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    textAlign: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
+    textAlign: "center",
   },
   separator: {
     marginVertical: 30,
@@ -35,7 +38,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     padding: 10,
-    width: "80%",
     marginBottom: 10,
   },
   switchContainer: {
@@ -46,11 +48,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     marginTop: 20,
-    width: "80%",
   },
   addButton: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "#57ad45",
     padding: 10,
     borderRadius: 5,
     marginLeft: 10,
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: "#d44e4e",
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
@@ -76,26 +77,10 @@ export default function AddNewItemModalScreen() {
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  // const [hasVisited, setHasVisited] = useState(false);
-  // const [coordinates, setCoordinates] = useState<[number, number] | undefined>(
-  //   undefined,
-  // );
-  // const [description, setDescription] = useState("");
-  // const [rating, setRating] = useState<number | undefined>();
-  // const [priority, setPriority] = useState<number | undefined>();
-  // const [tag, setTag] = useState("");
-  // const [favourite, setFavourite] = useState(false);
 
   const resetInputs = () => {
     setTitle("");
     setAddress("");
-    // setHasVisited(false);
-    // setCoordinates(undefined);
-    // setDescription("");
-    // setRating(undefined);
-    // setPriority(undefined);
-    // setTag("");
-    // setFavourite(false);
   };
 
   const handleAddItem = () => {
@@ -106,17 +91,9 @@ export default function AddNewItemModalScreen() {
         address,
         coordinates,
         createdOn: Date.now(),
-        // hasVisited,
-        // description,
-        // rating,
-        // priority,
-        // tag,
-        // favourite,
       });
       const newBucketList = new BucketList(bucketList.items.concat(newItem));
       setBucketList(newBucketList);
-
-      // TODO: Go to map from here maybe?
       router.push("listTab");
     });
   };
@@ -128,7 +105,7 @@ export default function AddNewItemModalScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add New Item</Text>
+      <Text style={styles.title}>Add your dream place</Text>
       <View style={styles.separator} />
 
       <TextInput
@@ -143,44 +120,6 @@ export default function AddNewItemModalScreen() {
         onChangeText={setAddress}
         placeholder="Address"
       />
-
-      {
-        // <View style={styles.switchContainer}>
-        //   <Text>Visited/Opened:</Text>
-        //   <Switch value={hasVisited} onValueChange={setHasVisited} />
-        // </View>
-        // <TextInput
-        //   style={styles.input}
-        //   value={description}
-        //   onChangeText={setDescription}
-        //   placeholder="Description"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(rating)}
-        //   onChangeText={(text) => setRating(Number(text))}
-        //   placeholder="Rating (0-5)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(priority)}
-        //   onChangeText={(text) => setPriority(Number(text))}
-        //   placeholder="Priority (0-3)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={tag}
-        //   onChangeText={setTag}
-        //   placeholder="Tag"
-        // />
-        // <View style={styles.switchContainer}>
-        //   <Text>Favourite:</Text>
-        //   <Switch value={favourite} onValueChange={setFavourite} />
-        // </View>
-      }
-
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
           <Text style={styles.buttonText}>Cancel</Text>

@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  // Switch,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import useDataContext from "../context/DataContext";
@@ -13,13 +12,16 @@ import BucketList from "../DB/BucketList";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: "20%",
+    width: "70%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    textAlign: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
+    textAlign: "center",
   },
   separator: {
     marginVertical: 30,
@@ -30,7 +32,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     padding: 10,
-    width: "80%",
     marginBottom: 10,
   },
   switchContainer: {
@@ -39,10 +40,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   saveButton: {
-    backgroundColor: "blue",
+    backgroundColor: "#57ad45",
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
+    textAlign: "center",
+    width: "25%",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   buttonText: {
     color: "white",
@@ -59,13 +64,6 @@ export default function EditItemModal() {
 
   const [title, setTitle] = useState(item?.title);
   const [address, setAddress] = useState(item?.address);
-  // const [coordinates, setCoordinates] = useState(item.coordinates || []);
-  // const [hasVisited, setHasVisited] = useState(item.hasVisited);
-  // const [description, setDescription] = useState(item.description || "");
-  // const [rating, setRating] = useState(item.rating || 0);
-  // const [priority, setPriority] = useState(item.priority || 0);
-  // const [tag, setTag] = useState(item.tag || "");
-  // const [favourite, setFavourite] = useState(item.favourite || false);
 
   const handleSave = () => {
     // TODO: Check if co-ordinates should be manually updated
@@ -88,7 +86,7 @@ export default function EditItemModal() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Edit Item</Text>
+      <Text style={styles.title}>Edit Your Destination</Text>
       <View style={styles.separator} />
 
       <TextInput
@@ -103,53 +101,6 @@ export default function EditItemModal() {
         onChangeText={setAddress}
         placeholder="Address"
       />
-
-      {
-        // <View style={styles.switchContainer}>
-        //   <Text>Visited/Opened:</Text>
-        //   <Switch value={hasVisited} onValueChange={setHasVisited} />
-        // </View>
-        //
-        // <TextInput
-        //   style={styles.input}
-        //   value={coordinates.join(", ")}
-        //   onChangeText={(text) =>
-        //     setCoordinates(text.split(",").map((coord) => Number(coord.trim())))
-        //   }
-        //   placeholder="Coordinates (e.g., latitude, longitude)"
-        // />
-        //
-        // <TextInput
-        //   style={styles.input}
-        //   value={description}
-        //   onChangeText={setDescription}
-        //   placeholder="Description"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(rating)}
-        //   onChangeText={(text) => setRating(Number(text))}
-        //   placeholder="Rating (0-5)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(priority)}
-        //   onChangeText={(text) => setPriority(Number(text))}
-        //   placeholder="Priority (0-3)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={tag}
-        //   onChangeText={setTag}
-        //   placeholder="Tag"
-        // />
-        // <View style={styles.switchContainer}>
-        //   <Text>Favourite:</Text>
-        //   <Switch value={favourite} onValueChange={setFavourite} />
-        // </View>
-      }
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>

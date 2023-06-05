@@ -8,7 +8,7 @@ function MapIcon() {
       size={30}
       style={{ marginBottom: -3 }}
       name="location-arrow"
-      color="#4eed76"
+      color="#24d450"
     />
   );
 }
@@ -19,7 +19,7 @@ function ListIcon() {
       size={26}
       style={{ marginBottom: -3 }}
       name="list-ul"
-      color="#f0ab2b"
+      color="#ed8a39"
     />
   );
 }
