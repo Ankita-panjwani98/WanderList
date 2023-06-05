@@ -11,6 +11,8 @@ export default function ItemMarker({ item }: { item: Item }) {
       title={item.title}
       description={item.address}
     >
+      {/* Callout to be implemented */}
+
       <FontAwesome
         size={35}
         style={{ marginBottom: -3 }}
