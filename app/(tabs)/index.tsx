@@ -54,6 +54,8 @@ export default function MapTab() {
     })();
     setError("");
   }, []);
+
+  // Initial position
   const INITIAL_POSITION = {
     latitude: latlong.latitude,
     longitude: latlong.longitude,
