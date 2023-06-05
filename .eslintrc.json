@@ -12,23 +12,18 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2020,
+    "ecmaVersion": "esnext",
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
   "rules": {
+    "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": [
       1,
       {
         "extensions": [".ts", ".tsx"]
-      }
-    ],
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
       }
     ],
     "no-use-before-define": "off",

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import * as Location from "expo-location";
-import MarkerMap from "../Marker/MarkerMap";
+import ItemMarker from "../../components/Marker";
+import useDataContext from "../../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -57,34 +56,8 @@ const demoWanderList: Item[] = [
   },
 ];
 
-export default function TabOneScreen() {
-  const [wanderList, setWanderlist] = useState(demoWanderList);
-
-  const geoCode = async (placeAddress: string) => {
-    const geoCodedLocation = await Location.geocodeAsync(placeAddress);
-    return geoCodedLocation[0];
-  };
-
-  const updatedBucketList = async () => {
-    const updatedArray = await Promise.all(
-      wanderList.map(async (item) => {
-        const geocodedLocation = await geoCode(item.location);
-        return {
-          ...item,
-          latLong: {
-            latitude: geocodedLocation.latitude,
-            longitude: geocodedLocation.longitude,
-          },
-        };
-      })
-    );
-
-    setWanderlist(updatedArray);
-  };
-
-  useEffect(() => {
-    updatedBucketList();
-  }, []);
+export default function MapTab() {
+  const { bucketList } = useDataContext();
 
   const INITIAL_POSITION = {
     latitude: 42.9877866,
@@ -100,9 +73,9 @@ export default function TabOneScreen() {
         provider={PROVIDER_GOOGLE}
         initialRegion={INITIAL_POSITION}
       >
-        {wanderList.map((item, index) => {
-          return <MarkerMap key={index} item={item} index={index} />;
-        })}
+        {bucketList.items.map((item) => (
+          <ItemMarker key={item.id} item={item} />
+        ))}
       </MapView>
     </View>
   );
