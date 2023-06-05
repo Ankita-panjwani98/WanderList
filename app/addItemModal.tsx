@@ -22,15 +22,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
   input: {
     borderBottomWidth: 1,
     borderColor: "lightgray",
@@ -76,10 +67,6 @@ const styles = StyleSheet.create({
     color: "red",
     maxWidth: "80%",
     padding: 10,
-  },
-  errorText: {
-    color: "red",
-    fontWeight: "bold",
   },
 });
 
