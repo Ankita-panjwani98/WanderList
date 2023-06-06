@@ -22,7 +22,7 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="editItemModal"
-          options={{ presentation: "modal" }}
+          options={{ headerTitle: "Edit Item", presentation: "modal" }}
         />
       </Stack>
     </DataProvider>

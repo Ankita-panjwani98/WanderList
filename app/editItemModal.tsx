@@ -8,6 +8,7 @@ import {
   // Switch,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { geocodeAsync } from "expo-location";
 import useDataContext from "../context/DataContext";
 import BucketList from "../DB/BucketList";
 
@@ -17,18 +18,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
   input: {
-    borderWidth: 1,
-    borderColor: "gray",
+    borderBottomWidth: 1,
+    borderColor: "lightgray",
     padding: 10,
     width: "80%",
     marginBottom: 10,
@@ -39,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   saveButton: {
-    backgroundColor: "blue",
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
@@ -47,6 +39,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  errorView: {
+    color: "red",
+    maxWidth: "80%",
+    padding: 10,
   },
 });
 
@@ -57,6 +54,7 @@ export default function EditItemModal() {
 
   const item = bucketList.items.find((i) => i.id === itemId);
 
+  const [error, setError] = useState("");
   const [title, setTitle] = useState(item?.title);
   const [address, setAddress] = useState(item?.address);
   // const [coordinates, setCoordinates] = useState(item.coordinates || []);
@@ -68,29 +66,54 @@ export default function EditItemModal() {
   // const [favourite, setFavourite] = useState(item.favourite || false);
 
   const handleSave = () => {
-    // TODO: Check if co-ordinates should be manually updated
+    if (!item) return;
 
-    if (!item || !title || !address) return;
+    setError("");
 
-    const updatedItem = {
-      ...item,
-      ...{ title, address, updateOn: Date.now() },
-    };
+    if (!address) {
+      setError("Address input is required!");
+      return;
+    }
 
-    const updatedList = bucketList.items.map((i) =>
-      i.id === updatedItem.id ? updatedItem : i
-    );
+    geocodeAsync(address)
+      .then((data) => {
+        const [coordinates] = data;
 
-    setBucketList(new BucketList(updatedList));
+        if (!coordinates) {
+          setError(
+            "Location coordinates could not be fetched! Please try with a different address."
+          );
+          return;
+        }
 
-    router.back();
+        const updatedItem = {
+          ...item,
+          ...{
+            title: title || address,
+            address,
+            coordinates,
+            updateOn: Date.now(),
+          },
+        };
+
+        const updatedList = bucketList.items.map((i) =>
+          i.id === updatedItem.id ? updatedItem : i
+        );
+
+        setBucketList(new BucketList(updatedList));
+
+        router.back();
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(
+          "Unexpected error occured while fetching coordinates, please try again later!"
+        );
+      });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Edit Item</Text>
-      <View style={styles.separator} />
-
       <TextInput
         style={styles.input}
         value={title}
@@ -154,6 +177,10 @@ export default function EditItemModal() {
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>
       </TouchableOpacity>
+
+      <View style={styles.errorView}>
+        <Text style={{ color: "red" }}> {error} </Text>
+      </View>
     </View>
   );
 }
