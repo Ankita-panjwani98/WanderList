@@ -1,9 +1,11 @@
 import { StyleSheet, View, Text } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import ItemMarker from "../../components/Marker";
 import useDataContext from "../../context/DataContext";
+import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
+import BucketList from "../../DB/BucketList";
 
 const styles = StyleSheet.create({
   container: {
@@ -29,39 +31,61 @@ const styles = StyleSheet.create({
   },
 });
 
+const DEFAULT_REGION_LONDON = {
+  latitude: 42.9877866,
+  longitude: -81.2459254,
+  latitudeDelta: 8,
+  longitudeDelta: 8,
+};
+
 export default function MapTab() {
-  const { bucketList } = useDataContext();
+  const { bucketList, setBucketList, settings } = useDataContext();
   const [error, setError] = useState("");
-  const [latlong, setLatLong] = useState({
-    latitude: 42.9877866,
-    longitude: -81.2459254,
-  });
+  const [currentLatLng, setCurrentLatLng] = useState<Region>();
+
   useEffect(() => {
     (async () => {
-      // Ask for location permission
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setError("Permission not granted!!");
         return;
       }
-      // Access the current user's location
+
+      // NOTE: See if map automatically follows user location
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      setLatLong({
+      setCurrentLatLng({
         latitude,
         longitude,
+        latitudeDelta: 8,
+        longitudeDelta: 8,
       });
     })();
-    setError("");
   }, []);
 
-  // Initial position
-  const INITIAL_POSITION = {
-    latitude: latlong.latitude,
-    longitude: latlong.longitude,
-    latitudeDelta: 8,
-    longitudeDelta: 8,
-  };
+  useEffect(() => {
+    if (!currentLatLng) return;
+
+    if (!settings.visitedDistanceThreshold) return;
+
+    const newItems = bucketList.items.map((item) => {
+      const newItem = { ...item };
+
+      const distance = getDistanceBetweenPoints(
+        item.coordinates,
+        currentLatLng
+      );
+
+      if (distance < settings.visitedDistanceThreshold) {
+        newItem.hasVisited = true;
+      }
+
+      return newItem;
+    });
+
+    setBucketList(new BucketList(newItems));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLatLng]);
 
   return (
     <View style={styles.container}>
@@ -69,7 +93,9 @@ export default function MapTab() {
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
-        initialRegion={INITIAL_POSITION}
+        region={currentLatLng || DEFAULT_REGION_LONDON}
+        showsIndoors={false}
+        followsUserLocation
       >
         {bucketList.items.map((item) => (
           <ItemMarker key={item.id} item={item} />
