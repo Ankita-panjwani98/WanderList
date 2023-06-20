@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import {
   StyleSheet,
   Text,
@@ -5,10 +6,12 @@ import {
   Button,
   View,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import BucketListItem from "../../components/BucketListItem";
 import useDataContext from "../../context/DataContext";
 import BucketList from "../../DB/BucketList";
+import Item from "../../DB/Item";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,6 +27,12 @@ const styles = StyleSheet.create({
 
 export default function ListTab() {
   const { bucketList, setBucketList } = useDataContext();
+  const router = useRouter();
+
+  const handleEditItem = (i: Item) => {
+    router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
+    // router.push({ pathname: "/detailsItemModal", params: { itemId: i.id } });
+  };
 
   const handleClearList = () => {
     Alert.alert(
@@ -48,7 +57,9 @@ export default function ListTab() {
   return bucketList.items.length > 0 ? (
     <ScrollView style={styles.container}>
       {bucketList.items.map((item) => (
-        <BucketListItem key={item.id} item={item} />
+        <TouchableOpacity key={item.id} onPress={() => handleEditItem(item)}>
+          <BucketListItem item={item} />
+        </TouchableOpacity>
       ))}
       <Button title="Clear List" onPress={handleClearList} />
     </ScrollView>

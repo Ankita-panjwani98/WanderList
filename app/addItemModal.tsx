@@ -3,8 +3,8 @@ import { StatusBar } from "expo-status-bar";
 import {
   Platform,
   StyleSheet,
+  Switch,
   Text,
-  // Switch,
   TextInput,
   TouchableOpacity,
   View,
@@ -76,28 +76,28 @@ export default function AddNewItemModalScreen() {
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  // const [hasVisited, setHasVisited] = useState(false);
+  const [hasVisited, setHasVisited] = useState(false);
   // const [coordinates, setCoordinates] = useState<[number, number] | undefined>(
-  //   undefined,
+  //  undefined,
   // );
-  // const [description, setDescription] = useState("");
-  // const [rating, setRating] = useState<number | undefined>();
-  // const [priority, setPriority] = useState<number | undefined>();
-  // const [tag, setTag] = useState("");
-  // const [favourite, setFavourite] = useState(false);
+  const [description, setDescription] = useState("");
+  const [rating, setRating] = useState<number | undefined>();
+  const [priority, setPriority] = useState<number | undefined>();
+  const [tag, setTag] = useState("");
+  const [favourite, setFavourite] = useState(false);
 
   const [error, setError] = useState("");
 
   const resetInputs = () => {
     setTitle("");
     setAddress("");
-    // setHasVisited(false);
+    setHasVisited(false);
     // setCoordinates(undefined);
-    // setDescription("");
-    // setRating(undefined);
-    // setPriority(undefined);
-    // setTag("");
-    // setFavourite(false);
+    setDescription("");
+    setRating(undefined);
+    setPriority(undefined);
+    setTag("");
+    setFavourite(false);
   };
 
   const handleAddItem = () => {
@@ -114,7 +114,7 @@ export default function AddNewItemModalScreen() {
 
         if (!coordinates) {
           setError(
-            "Location coordinates could not be fetched! Please try with a different address."
+            "Location coordinates could not be fetched!  Please try with a different address."
           );
           return;
         }
@@ -125,12 +125,12 @@ export default function AddNewItemModalScreen() {
           address,
           coordinates,
           createdOn: Date.now(),
-          // hasVisited,
-          // description,
-          // rating,
-          // priority,
-          // tag,
-          // favourite,
+          hasVisited,
+          description,
+          rating,
+          priority,
+          tag,
+          favourite,
         });
         const newBucketList = new BucketList(bucketList.items.concat(newItem));
         setBucketList(newBucketList);
@@ -167,42 +167,42 @@ export default function AddNewItemModalScreen() {
         placeholder="Address"
       />
 
-      {
-        // <View style={styles.switchContainer}>
-        //   <Text>Visited/Opened:</Text>
-        //   <Switch value={hasVisited} onValueChange={setHasVisited} />
-        // </View>
-        // <TextInput
-        //   style={styles.input}
-        //   value={description}
-        //   onChangeText={setDescription}
-        //   placeholder="Description"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(rating)}
-        //   onChangeText={(text) => setRating(Number(text))}
-        //   placeholder="Rating (0-5)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={String(priority)}
-        //   onChangeText={(text) => setPriority(Number(text))}
-        //   placeholder="Priority (0-3)"
-        //   keyboardType="numeric"
-        // />
-        // <TextInput
-        //   style={styles.input}
-        //   value={tag}
-        //   onChangeText={setTag}
-        //   placeholder="Tag"
-        // />
-        // <View style={styles.switchContainer}>
-        //   <Text>Favourite:</Text>
-        //   <Switch value={favourite} onValueChange={setFavourite} />
-        // </View>
-      }
+      <View style={styles.switchContainer}>
+        <Text>Visited/Opened:</Text>
+        <Switch value={hasVisited} onValueChange={setHasVisited} />
+      </View>
+      <TextInput
+        style={styles.input}
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Description"
+      />
+      <TextInput
+        style={styles.input}
+        // value={String(rating)}
+        value={rating !== undefined ? String(rating) : ""}
+        onChangeText={(text) => setRating(Number(text))}
+        placeholder="Rating (0-5)"
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        // value={String(priority)}
+        value={priority !== undefined ? String(priority) : ""}
+        onChangeText={(text) => setPriority(Number(text))}
+        placeholder="Priority (0-3)"
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        value={tag}
+        onChangeText={setTag}
+        placeholder="Tag"
+      />
+      <View style={styles.switchContainer}>
+        <Text>Favourite:</Text>
+        <Switch value={favourite} onValueChange={setFavourite} />
+      </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
