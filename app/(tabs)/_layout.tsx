@@ -24,6 +24,17 @@ function ListIcon() {
   );
 }
 
+function StatisticsIcon() {
+  return (
+    <FontAwesome
+      size={26}
+      style={{ marginBottom: -3 }}
+      name="bar-chart"
+      color="lightblue"
+    />
+  );
+}
+
 function Header({
   href,
   icon,
@@ -64,6 +75,13 @@ export default function TabLayout() {
           tabBarIcon: ListIcon,
           headerRight: () =>
             Header({ href: "/addItemModal", icon: "plus-circle" }),
+        }}
+      />
+      <Tabs.Screen
+        name="statisticsTab"
+        options={{
+          title: "Statistics",
+          tabBarIcon: StatisticsIcon,
         }}
       />
     </Tabs>
