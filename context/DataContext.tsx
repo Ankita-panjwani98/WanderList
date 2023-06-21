@@ -21,7 +21,6 @@ export interface DataContext {
   settings: Settings;
   setBucketList: (bucketList: BucketList) => void;
   setSettings: (settings: Settings) => void;
-  resetData: () => void;
 }
 
 const ctx = createContext<DataContext | null>(null);
@@ -65,14 +64,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
     [bucketList, settings]
   );
 
-  const resetData = useCallback(() => {
-    const newBucketList = new BucketList([]);
-    const newSettings = new Settings();
-    _setBucketList(newBucketList);
-    _setSettings(newSettings);
-    syncDataToFile({ newBucketList, newSettings });
-  }, [syncDataToFile]);
-
   const setBucketList = useCallback(
     (newBucketList: BucketList) => {
       _setBucketList(newBucketList);
@@ -95,9 +86,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setBucketList,
       settings,
       setSettings,
-      resetData,
     }),
-    [bucketList, setBucketList, settings, setSettings, resetData]
+    [bucketList, setBucketList, settings, setSettings]
   );
 
   return <ctx.Provider value={value}>{children}</ctx.Provider>;
@@ -106,14 +96,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 export default function useDataContext() {
   const c = useContext<DataContext | null>(ctx);
 
-  if (
-    !c ||
-    !c.bucketList ||
-    !c.settings ||
-    !c.setBucketList ||
-    !c.setSettings ||
-    !c.resetData
-  )
+  if (!c || !c.bucketList || !c.settings || !c.setBucketList || !c.setSettings)
     throw new Error("Error while accessing bucket list context");
 
   return c;
