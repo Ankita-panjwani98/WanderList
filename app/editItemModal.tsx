@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "80%",
   },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
   saveButton: {
     flex: 1,
     backgroundColor: "green",
@@ -61,10 +65,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
   },
   errorView: {
     color: "red",
