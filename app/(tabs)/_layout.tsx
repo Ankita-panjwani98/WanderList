@@ -2,38 +2,27 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 
-function MapIcon() {
+function TabIcon({
+  name,
+  color,
+}: {
+  name: keyof typeof FontAwesome.glyphMap;
+  color: string;
+}) {
   return (
     <FontAwesome
       size={30}
       style={{ marginBottom: -3 }}
-      name="location-arrow"
-      color="green"
+      name={name}
+      color={color}
     />
   );
 }
 
-function ListIcon() {
-  return (
-    <FontAwesome
-      size={26}
-      style={{ marginBottom: -3 }}
-      name="list-ul"
-      color="orange"
-    />
-  );
-}
-
-function StatisticsIcon() {
-  return (
-    <FontAwesome
-      size={26}
-      style={{ marginBottom: -3 }}
-      name="bar-chart"
-      color="lightblue"
-    />
-  );
-}
+const MapIcon = () => TabIcon({ name: "location-arrow", color: "green" });
+const ListIcon = () => TabIcon({ name: "list-ul", color: "orange" });
+const StatisticsIcon = () => TabIcon({ name: "bar-chart", color: "lightblue" });
+const SettingsIcon = () => TabIcon({ name: "gear", color: "gray" });
 
 function Header({
   href,
@@ -82,6 +71,15 @@ export default function TabLayout() {
         options={{
           title: "Statistics",
           tabBarIcon: StatisticsIcon,
+        }}
+      />
+      <Tabs.Screen
+        name="settingsTab"
+        options={{
+          title: "Settings",
+          tabBarIcon: SettingsIcon,
+          headerRight: () =>
+            Header({ href: "/settingsHelpModal", icon: "question-circle" }),
         }}
       />
     </Tabs>
