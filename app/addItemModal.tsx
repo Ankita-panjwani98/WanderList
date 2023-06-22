@@ -135,7 +135,6 @@ export default function AddNewItemModalScreen() {
         const newBucketList = new BucketList(bucketList.items.concat(newItem));
         setBucketList(newBucketList);
 
-        // TODO: Go to map from here maybe?
         router.push("listTab");
       })
       .catch((err) => {
@@ -167,10 +166,6 @@ export default function AddNewItemModalScreen() {
         placeholder="Address"
       />
 
-      <View style={styles.switchContainer}>
-        <Text>Opened/Visited:</Text>
-        <Switch value={hasVisited} onValueChange={setHasVisited} />
-      </View>
       <TextInput
         style={styles.input}
         value={description}
@@ -199,6 +194,11 @@ export default function AddNewItemModalScreen() {
         onChangeText={setTag}
         placeholder="Tag"
       /> */}
+      <View style={styles.switchContainer}>
+        <Text>Opened/Visited:</Text>
+        <Switch value={hasVisited} onValueChange={setHasVisited} />
+      </View>
+
       <View style={styles.switchContainer}>
         <Text>Favourite:</Text>
         <Switch value={favourite} onValueChange={setFavourite} />
