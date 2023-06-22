@@ -93,7 +93,7 @@ export default function MapTab() {
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
-        region={currentLatLng || DEFAULT_REGION_LONDON}
+        initialRegion={currentLatLng || DEFAULT_REGION_LONDON}
         showsIndoors={false}
         followsUserLocation
       >
