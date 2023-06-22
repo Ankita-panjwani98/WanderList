@@ -7,6 +7,7 @@ import {
   Image,
 } from "react-native";
 import * as Progress from "react-native-progress";
+import { GraphImage } from "../../components/Media";
 import useDataContext from "../../context/DataContext";
 import Item from "../../DB/Item";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
@@ -131,9 +132,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const GraphImage = require("../../assets/images/graph.png");
 
 export default function StatisticsTab() {
   const { bucketList } = useDataContext();
