@@ -1,6 +1,6 @@
-import { StyleSheet, View, Text, Alert } from "react-native";
-import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { useEffect, useState } from "react";
+import { StyleSheet, View, Alert } from "react-native";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { useEffect, useRef } from "react";
 import * as Location from "expo-location";
 import ItemMarker from "../../components/Marker";
 import useDataContext from "../../context/DataContext";
@@ -38,79 +38,94 @@ const DEFAULT_REGION_LONDON = {
   longitudeDelta: 8,
 };
 
-const requestLocationPermission = async (): Promise<boolean> => {
-  if (Location.PermissionStatus.GRANTED) return true;
-  if (Location.PermissionStatus.DENIED) return false;
+const requestLocationPermission = async () => {
   const { status } = await Location.requestForegroundPermissionsAsync();
   return status === Location.PermissionStatus.GRANTED;
 };
 
 export default function MapTab() {
   const { bucketList, setBucketList, settings } = useDataContext();
-  const [currentLatLng, setCurrentLatLng] = useState<Region>();
+  const mapRef = useRef<MapView | null>(null);
 
-  const updateLocation = async () => {
-    const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.LocationAccuracy.Low,
-    });
-
-    setCurrentLatLng({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 8,
-      longitudeDelta: 8,
-    });
-  };
-
+  // Request permission if not granted for first time when app opened
+  // Show alert if denied
   useEffect(() => {
-    requestLocationPermission().then((hasPermission) => {
-      if (hasPermission) updateLocation();
-      else {
+    requestLocationPermission().then((granted) => {
+      if (!granted) {
         Alert.alert(
-          "Location permission denied.",
+          "Location permission not granted.",
           "Some features may not work correctly!"
         );
       }
     });
-  }, []);
+  });
 
+  // This function updates mapView to include all items
   useEffect(() => {
-    if (!currentLatLng) return;
-
-    if (!settings.visitedDistanceThreshold) return;
-
-    const newItems = bucketList.items.map((item) => {
-      const newItem = { ...item };
-
-      const distance = getDistanceBetweenPoints(
-        item.coordinates,
-        currentLatLng
-      );
-
-      if (distance < settings.visitedDistanceThreshold) {
-        if (!newItem.hasVisited) {
-          newItem.hasVisited = true;
-          Alert.alert(
-            `Welcome to ${item.title}`,
-            `Marking ${item.address} as visited!`
-          );
-        }
+    if (!mapRef.current || !bucketList.items.length) return;
+    mapRef.current.fitToCoordinates(
+      bucketList.items.map((it) => it.coordinates),
+      {
+        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+        animated: true,
       }
+    );
+  }, [bucketList.items]);
 
-      return newItem;
-    });
+  // The block below automatically marks nearby items visited
+  useEffect(() => {
+    if (!bucketList.items.length) return;
 
-    setBucketList(new BucketList(newItems));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLatLng]);
+    (async () => {
+      const hasPermission = await requestLocationPermission();
+
+      if (!hasPermission) return;
+
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.LocationAccuracy.Low,
+      });
+
+      const newBucketList = new BucketList([]);
+      let hasUpdated = false;
+
+      bucketList.items.forEach((item) => {
+        const distance = getDistanceBetweenPoints(
+          item.coordinates,
+          currentLocation.coords
+        );
+
+        if (distance < settings.visitedDistanceThreshold) {
+          if (!item.hasVisited) {
+            const newItem = { ...item };
+            newItem.hasVisited = true;
+            newItem.updatedOn = Date.now();
+            Alert.alert(
+              `Welcome to ${item.title}`,
+              `Marking ${item.address} as visited!`
+            );
+            newBucketList.items.push(newItem);
+            hasUpdated = true;
+          }
+        } else {
+          newBucketList.items.push(item);
+        }
+      });
+
+      if (hasUpdated) setBucketList(newBucketList);
+    })();
+  }, [bucketList.items, settings.visitedDistanceThreshold, setBucketList]);
 
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
-        region={currentLatLng || DEFAULT_REGION_LONDON}
+        initialRegion={DEFAULT_REGION_LONDON}
         showsIndoors={false}
+        ref={(r) => {
+          mapRef.current = r;
+        }}
+        showsUserLocation
         followsUserLocation
       >
         {bucketList.items.map((item) => (

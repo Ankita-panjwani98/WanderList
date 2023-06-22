@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import Item from "../DB/Item";
 
 const styles = StyleSheet.create({
@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
   },
   itemDetailsContainer: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
     maxWidth: "75%",
   },
   title: {
@@ -59,13 +59,22 @@ const styles = StyleSheet.create({
   },
 });
 
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+const UnvisitedIcon = require("../assets/images/Icon.png");
+
 export default function BucketListItem({ item }: { item: Item }) {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemSubContainer}>
         <View style={styles.itemDetailsContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.location}>{item.address}</Text>
+          <Image
+            source={UnvisitedIcon}
+            style={{ width: 50, height: 50, marginRight: 10 }}
+          />
+          <View>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.location}>{item.address}</Text>
+          </View>
         </View>
       </View>
       {/* Display additional fields
