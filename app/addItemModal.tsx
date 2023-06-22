@@ -81,9 +81,9 @@ export default function AddNewItemModalScreen() {
   //  undefined,
   // );
   const [description, setDescription] = useState("");
-  const [rating, setRating] = useState<number | undefined>();
-  const [priority, setPriority] = useState<number | undefined>();
-  const [tag, setTag] = useState("");
+  // const [rating, setRating] = useState<number | undefined>();
+  // const [priority, setPriority] = useState<number | undefined>();
+  // const [tag, setTag] = useState("");
   const [favourite, setFavourite] = useState(false);
 
   const [error, setError] = useState("");
@@ -94,9 +94,9 @@ export default function AddNewItemModalScreen() {
     setHasVisited(false);
     // setCoordinates(undefined);
     setDescription("");
-    setRating(undefined);
-    setPriority(undefined);
-    setTag("");
+    // setRating(undefined);
+    // setPriority(undefined);
+    // setTag("");
     setFavourite(false);
   };
 
@@ -127,9 +127,9 @@ export default function AddNewItemModalScreen() {
           createdOn: Date.now(),
           hasVisited,
           description,
-          rating,
-          priority,
-          tag,
+          // rating,
+          // priority,
+          // tag,
           favourite,
         });
         const newBucketList = new BucketList(bucketList.items.concat(newItem));
@@ -168,7 +168,7 @@ export default function AddNewItemModalScreen() {
       />
 
       <View style={styles.switchContainer}>
-        <Text>Visited/Opened:</Text>
+        <Text>Opened/Visited:</Text>
         <Switch value={hasVisited} onValueChange={setHasVisited} />
       </View>
       <TextInput
@@ -177,7 +177,7 @@ export default function AddNewItemModalScreen() {
         onChangeText={setDescription}
         placeholder="Description"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         // value={String(rating)}
         value={rating !== undefined ? String(rating) : ""}
@@ -198,7 +198,7 @@ export default function AddNewItemModalScreen() {
         value={tag}
         onChangeText={setTag}
         placeholder="Tag"
-      />
+      /> */}
       <View style={styles.switchContainer}>
         <Text>Favourite:</Text>
         <Switch value={favourite} onValueChange={setFavourite} />

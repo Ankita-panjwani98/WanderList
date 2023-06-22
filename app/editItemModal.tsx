@@ -87,9 +87,9 @@ export default function EditItemModal() {
   // const [coordinates, setCoordinates] = useState(item.coordinates || []);
   const [hasVisited, setHasVisited] = useState(item?.hasVisited);
   const [description, setDescription] = useState(item?.description || "");
-  const [rating, setRating] = useState(item?.rating || undefined);
-  const [priority, setPriority] = useState(item?.priority || undefined);
-  const [tag, setTag] = useState(item?.tag || "");
+  // const [rating, setRating] = useState(item?.rating || undefined);
+  // const [priority, setPriority] = useState(item?.priority || undefined);
+  // const [tag, setTag] = useState(item?.tag || "");
   const [favourite, setFavourite] = useState(item?.favourite || false);
 
   const handleSave = () => {
@@ -102,15 +102,15 @@ export default function EditItemModal() {
       return;
     }
 
-    if (rating && rating > 5) {
-      setError("Rating should be set in range (0-5)!");
-      return;
-    }
+    // if (rating && rating > 5) {
+    //   setError("Rating should be set in range (0-5)!");
+    //   return;
+    // }
 
-    if (priority && priority > 3) {
-      setError("Priority should be set in range (0-3)!");
-      return;
-    }
+    // if (priority && priority > 3) {
+    //   setError("Priority should be set in range (0-3)!");
+    //   return;
+    // }
 
     geocodeAsync(address)
       .then((data) => {
@@ -132,9 +132,9 @@ export default function EditItemModal() {
             updateOn: Date.now(),
             hasVisited,
             description,
-            rating,
-            priority,
-            tag,
+            // rating,
+            // priority,
+            // tag,
             favourite,
           },
         };
@@ -232,7 +232,7 @@ export default function EditItemModal() {
           onChangeText={setDescription}
           placeholder="Description"
         />
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={rating !== undefined ? String(rating) : ""}
           onChangeText={(text) => setRating(Number(text))}
@@ -251,7 +251,7 @@ export default function EditItemModal() {
           value={tag}
           onChangeText={setTag}
           placeholder="Tag"
-        />
+        /> */}
         <View style={styles.switchContainer}>
           <Text>Favourite:</Text>
           <Switch value={favourite} onValueChange={setFavourite} />
