@@ -129,7 +129,7 @@ export default function EditItemModal() {
             title: title || address,
             address,
             coordinates,
-            updateOn: Date.now(),
+            updatedOn: Date.now(),
             hasVisited,
             description,
             // rating,
@@ -181,13 +181,14 @@ export default function EditItemModal() {
     router.back();
   };
 
+  if (!item) return <Text>Item not found</Text>;
+
   return (
     <>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.deleteButton}
-          // onPress={() => handleDeleteItem(item)}
-          onPress={() => handleDeleteItem(item!)}
+          onPress={() => handleDeleteItem(item)}
         >
           <FontAwesome
             size={30}

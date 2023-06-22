@@ -7,8 +7,8 @@ import {
   Image,
 } from "react-native";
 import * as Progress from "react-native-progress";
-import graphImage from "../../assets/images/graph.png";
 import useDataContext from "../../context/DataContext";
+import Item from "../../DB/Item";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
 
 const styles = StyleSheet.create({
@@ -121,47 +121,46 @@ const styles = StyleSheet.create({
     marginTop: "18%",
     fontSize: 16,
     color: "#327063",
-    fontWeight: 600,
+    fontWeight: "600",
   },
   totalDistanceNumber: {
     marginTop: "18%",
     fontSize: 16,
     paddingLeft: 10,
     color: "#7a7676",
-    fontWeight: 700,
+    fontWeight: "700",
   },
 });
 
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+const GraphImage = require("../../assets/images/graph.png");
+
 export default function StatisticsTab() {
-  const { bucketList, setBucketList } = useDataContext();
+  const { bucketList } = useDataContext();
 
-  let visitedCount = 0;
-  let unvisitedCount = 0;
-  let favouriteCount = 0;
-  let totalDisplacement = 0;
+  const totalPlaces = bucketList.items.length;
+  const visitedPlaces: Item[] = bucketList.items
+    .filter((it) => it.hasVisited)
+    .sort((a, b) => (a.updatedOn ?? 0) - (b.updatedOn ?? 0));
+  const visitedCount = visitedPlaces.length;
+  const unvisitedCount = totalPlaces - visitedCount;
+  const favouriteCount = bucketList.items.reduce(
+    (sum, item) => (item.favourite ? sum + 1 : sum),
+    0
+  );
 
-  bucketList.items.forEach((item, index) => {
-    if (item.favourite) {
-      favouriteCount += 1;
-    }
-    if (item.hasVisited) {
-      visitedCount += 1;
+  // Calculate distance in the order of visited places
+  const totalDisplacement = visitedPlaces.reduce((sum, _, index, arr) => {
+    if (index === 0) return 0;
+    return (
+      sum +
+      getDistanceBetweenPoints(
+        arr[index - 1].coordinates,
+        arr[index].coordinates
+      )
+    );
+  }, 0);
 
-      if (index > 0) {
-        const prevLocation = bucketList.items[index - 1].coordinates;
-        const currentLocation = item.coordinates;
-        const distance = getDistanceBetweenPoints(
-          prevLocation,
-          currentLocation
-        );
-        totalDisplacement += distance;
-      }
-    } else {
-      unvisitedCount += 1;
-    }
-  });
-
-  const totalPlaces = visitedCount + unvisitedCount;
   const visitedPercentage =
     totalPlaces === 0 ? 0 : (visitedCount / totalPlaces) * 100;
   const unvisitedPercentage =
@@ -172,7 +171,7 @@ export default function StatisticsTab() {
   return bucketList.items.length > 0 ? (
     <ScrollView style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        <Image source={graphImage} style={{ width: 220, height: 220 }} />
+        <Image source={GraphImage} style={{ width: 220, height: 220 }} />
       </View>
 
       <View style={styles.statisticsContainer}>
