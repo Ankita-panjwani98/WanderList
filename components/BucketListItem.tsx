@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
 import Item from "../DB/Item";
-import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -61,8 +60,6 @@ const styles = StyleSheet.create({
 });
 
 export default function BucketListItem({ item }: { item: Item }) {
-  const { bucketList, setBucketList } = useDataContext();
-
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemSubContainer}>

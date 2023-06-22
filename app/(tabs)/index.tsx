@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Alert } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
@@ -38,29 +38,40 @@ const DEFAULT_REGION_LONDON = {
   longitudeDelta: 8,
 };
 
+const requestLocationPermission = async (): Promise<boolean> => {
+  if (Location.PermissionStatus.GRANTED) return true;
+  if (Location.PermissionStatus.DENIED) return false;
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  return status === Location.PermissionStatus.GRANTED;
+};
+
 export default function MapTab() {
   const { bucketList, setBucketList, settings } = useDataContext();
-  const [error, setError] = useState("");
   const [currentLatLng, setCurrentLatLng] = useState<Region>();
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setError("Permission not granted!!");
-        return;
-      }
+  const updateLocation = async () => {
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.LocationAccuracy.Low,
+    });
 
-      // NOTE: See if map automatically follows user location
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-      setCurrentLatLng({
-        latitude,
-        longitude,
-        latitudeDelta: 8,
-        longitudeDelta: 8,
-      });
-    })();
+    setCurrentLatLng({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 8,
+      longitudeDelta: 8,
+    });
+  };
+
+  useEffect(() => {
+    requestLocationPermission().then((hasPermission) => {
+      if (hasPermission) updateLocation();
+      else {
+        Alert.alert(
+          "Location permission denied.",
+          "Some features may not work correctly!"
+        );
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -77,7 +88,13 @@ export default function MapTab() {
       );
 
       if (distance < settings.visitedDistanceThreshold) {
-        newItem.hasVisited = true;
+        if (!newItem.hasVisited) {
+          newItem.hasVisited = true;
+          Alert.alert(
+            `Welcome to ${item.title}`,
+            `Marking ${item.address} as visited!`
+          );
+        }
       }
 
       return newItem;
@@ -89,11 +106,10 @@ export default function MapTab() {
 
   return (
     <View style={styles.container}>
-      {error ? <Text style={styles.errorText}>{error}</Text> : ""}
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
-        initialRegion={currentLatLng || DEFAULT_REGION_LONDON}
+        region={currentLatLng || DEFAULT_REGION_LONDON}
         showsIndoors={false}
         followsUserLocation
       >

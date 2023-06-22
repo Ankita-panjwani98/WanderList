@@ -27,7 +27,7 @@ const ctx = createContext<DataContext | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [bucketList, _setBucketList] = useState<BucketList>(new BucketList([]));
-  const [settings, _setSettings] = useState<Settings>(new Settings());
+  const [settings, _setSettings] = useState<Settings>(new Settings({}));
 
   useEffect(() => {
     readFile(DATA_FILE)
