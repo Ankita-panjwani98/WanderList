@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import Item from "../DB/Item";
+import getIconForItem from "../utils/getIconForItem";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -59,16 +60,13 @@ const styles = StyleSheet.create({
   },
 });
 
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const UnvisitedIcon = require("../assets/images/Icon.png");
-
 export default function BucketListItem({ item }: { item: Item }) {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemSubContainer}>
         <View style={styles.itemDetailsContainer}>
           <Image
-            source={UnvisitedIcon}
+            source={getIconForItem(item)}
             style={{ width: 50, height: 50, marginRight: 10 }}
           />
           <View>
