@@ -23,6 +23,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  clearListBtn: {
+    backgroundColor: "#3cb371",
+    width: "40%",
+    borderRadius: 5,
+    padding: 8,
+    color: "white",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
 
 export default function ListTab() {
@@ -61,7 +76,10 @@ export default function ListTab() {
           <BucketListItem item={item} />
         </TouchableOpacity>
       ))}
-      <Button title="Clear List" onPress={handleClearList} />
+
+      <TouchableOpacity style={styles.clearListBtn} onPress={handleClearList}>
+        <Text style={styles.buttonText}>Clear List</Text>
+      </TouchableOpacity>
     </ScrollView>
   ) : (
     <View style={styles.emptyListView}>

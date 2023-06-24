@@ -6,6 +6,7 @@ import ItemMarker from "../../components/Marker";
 import useDataContext from "../../context/DataContext";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
 import BucketList from "../../DB/BucketList";
+import "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   container: {
