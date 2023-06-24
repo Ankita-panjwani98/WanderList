@@ -4,11 +4,11 @@
     "slug": "wanderlist",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Icon.png",
+    "icon": "./assets/images/logoIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logo.png",
+      "image": "./assets/images/Wanderlist.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,11 +22,22 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.ankitapanjwani.wanderlist",
+      "config": {
+        "googleMaps": {
+           "apiKey": "AIzaSyATaYufBV7vu9mvare5Mq0iIq2I0EnP5ig"
+        }
       }
     },
     "web": {
       "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f8e6e5d6-40cc-46b9-94de-53d164c934af"
+      }
     }
   }
 }
