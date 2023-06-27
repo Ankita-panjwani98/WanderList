@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Icon.png",
+        "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ankitapanjwani.wanderlist",
