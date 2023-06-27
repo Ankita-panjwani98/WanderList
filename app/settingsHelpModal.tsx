@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, View, Text } from "react-native";
+import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -17,6 +18,8 @@ const styles = StyleSheet.create({
 });
 
 export default function SettingsInfoModal() {
+  const { settings } = useDataContext();
+
   return (
     <View style={styles.container}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
@@ -26,8 +29,9 @@ export default function SettingsInfoModal() {
           When WanderList is opened, it checks your current location and
           compares it to the items in your bucketlist If you are nearby, the
           item is automatically marked as visited. How close the distance should
-          be is determined by this value. Valid values are between 1 to 50 km.
-          Setting it to zero disables this feature.
+          be is determined by this value. Valid values are between
+          {settings.MIN_VISITED_DISTANCE} to {settings.MAX_VISITED_DISTANCE}
+          m. Setting it to zero disables this feature.
         </Text>
       </View>
     </View>

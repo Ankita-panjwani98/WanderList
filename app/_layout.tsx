@@ -24,6 +24,10 @@ function RootLayoutNav() {
           options={{ headerTitle: "Edit Item", presentation: "modal" }}
         />
         <Stack.Screen
+          name="statisticsHelpModal"
+          options={{ headerTitle: "Statistics Help", presentation: "modal" }}
+        />
+        <Stack.Screen
           name="settingsHelpModal"
           options={{ headerTitle: "Settings Help", presentation: "modal" }}
         />
