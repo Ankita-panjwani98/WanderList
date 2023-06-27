@@ -1,12 +1,13 @@
 import { StyleSheet, View, Alert } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { useEffect, useRef } from "react";
-import * as Location from "expo-location";
 import ItemMarker from "../../components/Marker";
 import useDataContext from "../../context/DataContext";
-import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
-import BucketList from "../../DB/BucketList";
 import "react-native-gesture-handler";
+import requestLocationPermission from "../../utils/requestLocationPermission";
+import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
+import BucketList from "../../DB/BucketList";
+import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
 
 const styles = StyleSheet.create({
   container: {
@@ -39,14 +40,10 @@ const DEFAULT_REGION_LONDON = {
   longitudeDelta: 8,
 };
 
-const requestLocationPermission = async () => {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  return status === Location.PermissionStatus.GRANTED;
-};
-
 export default function MapTab() {
   const { bucketList, setBucketList, settings } = useDataContext();
   const mapRef = useRef<MapView | null>(null);
+  const visitedTimer = useRef<NodeJS.Timeout>();
 
   // Request permission if not granted for first time when app opened
   // Show alert if denied
@@ -64,6 +61,7 @@ export default function MapTab() {
   // This function updates mapView to include all items
   useEffect(() => {
     if (!mapRef.current || !bucketList.items.length) return;
+
     mapRef.current.fitToCoordinates(
       bucketList.items.map((it) => it.coordinates),
       {
@@ -71,50 +69,52 @@ export default function MapTab() {
         animated: true,
       }
     );
-  }, [bucketList.items]);
+  }, [bucketList]);
 
-  // The block below automatically marks nearby items visited
-  useEffect(() => {
-    if (!bucketList.items.length) return;
+  const updateVisited = async () => {
+    const currentLocation = await getCurrentPositionAsync();
+    if (!currentLocation) return;
 
-    (async () => {
-      const hasPermission = await requestLocationPermission();
+    const newBucketList = new BucketList([]);
+    let hasUpdated = false;
 
-      if (!hasPermission) return;
+    bucketList.items.forEach((item) => {
+      if (item.hasVisited) {
+        newBucketList.items.push(item);
+        return;
+      }
 
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.LocationAccuracy.Low,
-      });
+      const distance = getDistanceBetweenPoints(
+        item.coordinates,
+        currentLocation.coords
+      );
 
-      const newBucketList = new BucketList([]);
-      let hasUpdated = false;
-
-      bucketList.items.forEach((item) => {
-        const distance = getDistanceBetweenPoints(
-          item.coordinates,
-          currentLocation.coords
+      if (distance * 1000 < settings.visitedDistanceThreshold) {
+        const newItem = { ...item };
+        newItem.hasVisited = true;
+        newItem.updatedOn = Date.now();
+        newBucketList.items.push(newItem);
+        hasUpdated = true;
+        Alert.alert(
+          `Welcome to ${item.title}`,
+          `Marking ${item.address} as visited!`
         );
+      }
+    });
 
-        if (distance < settings.visitedDistanceThreshold) {
-          if (!item.hasVisited) {
-            const newItem = { ...item };
-            newItem.hasVisited = true;
-            newItem.updatedOn = Date.now();
-            Alert.alert(
-              `Welcome to ${item.title}`,
-              `Marking ${item.address} as visited!`
-            );
-            newBucketList.items.push(newItem);
-            hasUpdated = true;
-          }
-        } else {
-          newBucketList.items.push(item);
-        }
-      });
+    if (hasUpdated) setBucketList(newBucketList);
+  };
 
-      if (hasUpdated) setBucketList(newBucketList);
-    })();
-  }, [bucketList.items, settings.visitedDistanceThreshold, setBucketList]);
+  useEffect(() => {
+    if (visitedTimer.current) clearInterval(visitedTimer.current);
+    if (settings.visitedDistanceThreshold && bucketList.items.length) {
+      visitedTimer.current = setInterval(updateVisited, 5000);
+    }
+    return () => {
+      clearInterval(visitedTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bucketList, settings]);
 
   return (
     <View style={styles.container}>

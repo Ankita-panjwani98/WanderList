@@ -213,11 +213,6 @@ export default function EditItemModal() {
           placeholder="Address"
         />
 
-        <View style={styles.switchContainer}>
-          <Text>Opened/Visited:</Text>
-          <Switch value={hasVisited} onValueChange={setHasVisited} />
-        </View>
-
         {/* <TextInput
           style={styles.input}
           value={coordinates.join(", ")}
@@ -253,6 +248,12 @@ export default function EditItemModal() {
           onChangeText={setTag}
           placeholder="Tag"
         /> */}
+
+        <View style={styles.switchContainer}>
+          <Text>Opened/Visited:</Text>
+          <Switch value={hasVisited} onValueChange={setHasVisited} />
+        </View>
+
         <View style={styles.switchContainer}>
           <Text>Favourite:</Text>
           <Switch value={favourite} onValueChange={setFavourite} />

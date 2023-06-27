@@ -71,6 +71,8 @@ export default function TabLayout() {
         options={{
           title: "Statistics",
           tabBarIcon: StatisticsIcon,
+          headerRight: () =>
+            Header({ href: "/statisticsHelpModal", icon: "question-circle" }),
         }}
       />
       <Tabs.Screen

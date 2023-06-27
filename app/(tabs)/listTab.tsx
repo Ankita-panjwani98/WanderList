@@ -3,14 +3,11 @@ import {
   StyleSheet,
   Text,
   ScrollView,
-  Button,
   View,
-  Alert,
   TouchableOpacity,
 } from "react-native";
 import BucketListItem from "../../components/BucketListItem";
 import useDataContext from "../../context/DataContext";
-import BucketList from "../../DB/BucketList";
 import Item from "../../DB/Item";
 
 const styles = StyleSheet.create({
@@ -41,32 +38,11 @@ const styles = StyleSheet.create({
 });
 
 export default function ListTab() {
-  const { bucketList, setBucketList } = useDataContext();
+  const { bucketList } = useDataContext();
   const router = useRouter();
 
   const handleEditItem = (i: Item) => {
     router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
-    // router.push({ pathname: "/detailsItemModal", params: { itemId: i.id } });
-  };
-
-  const handleClearList = () => {
-    Alert.alert(
-      "Clear List",
-      "Are you sure you want to delete all items from the list?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete All",
-          style: "destructive",
-          onPress: () => {
-            setBucketList(new BucketList([]));
-          },
-        },
-      ]
-    );
   };
 
   return bucketList.items.length > 0 ? (
@@ -76,10 +52,6 @@ export default function ListTab() {
           <BucketListItem item={item} />
         </TouchableOpacity>
       ))}
-
-      <TouchableOpacity style={styles.clearListBtn} onPress={handleClearList}>
-        <Text style={styles.buttonText}>Clear List</Text>
-      </TouchableOpacity>
     </ScrollView>
   ) : (
     <View style={styles.emptyListView}>

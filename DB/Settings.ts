@@ -6,6 +6,11 @@ class Settings {
   // Set it to zero to disable this feature
   visitedDistanceThreshold: number;
 
+  // meters
+  MIN_VISITED_DISTANCE = 100;
+
+  MAX_VISITED_DISTANCE = 10000;
+
   constructor({
     isDarkModeOn = false,
     visitedDistanceThreshold = 1,
