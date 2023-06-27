@@ -13,7 +13,7 @@ class Settings {
 
   constructor({
     isDarkModeOn = false,
-    visitedDistanceThreshold = 1,
+    visitedDistanceThreshold = 1000,
   }: {
     isDarkModeOn?: boolean;
     visitedDistanceThreshold?: number;

@@ -99,6 +99,8 @@ export default function MapTab() {
           `Welcome to ${item.title}`,
           `Marking ${item.address} as visited!`
         );
+      } else {
+        newBucketList.items.push(item);
       }
     });
 
