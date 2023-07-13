@@ -21,6 +21,7 @@ export interface DataContext {
   settings: Settings;
   setBucketList: (bucketList: BucketList) => void;
   setSettings: (settings: Settings) => void;
+  isFileRead: boolean;
 }
 
 const ctx = createContext<DataContext | null>(null);
@@ -28,6 +29,7 @@ const ctx = createContext<DataContext | null>(null);
 export function DataProvider({ children }: { children: ReactNode }) {
   const [bucketList, _setBucketList] = useState<BucketList>(new BucketList([]));
   const [settings, _setSettings] = useState<Settings>(new Settings({}));
+  const [isFileRead, _setFileRead] = useState(false);
 
   useEffect(() => {
     readFile(DATA_FILE)
@@ -37,6 +39,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           _setBucketList(b);
           _setSettings(s);
         }
+        _setFileRead(true);
       })
       .catch((err) => {
         throw new Error(err);
@@ -86,8 +89,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setBucketList,
       settings,
       setSettings,
+      isFileRead,
     }),
-    [bucketList, setBucketList, settings, setSettings]
+    [bucketList, setBucketList, settings, setSettings, isFileRead]
   );
 
   return <ctx.Provider value={value}>{children}</ctx.Provider>;

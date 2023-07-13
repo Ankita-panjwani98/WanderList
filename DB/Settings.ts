@@ -6,6 +6,8 @@ class Settings {
   // Set it to zero to disable this feature
   visitedDistanceThreshold: number;
 
+  isFirstLaunch: boolean;
+
   // meters
   MIN_VISITED_DISTANCE = 100;
 
@@ -14,12 +16,15 @@ class Settings {
   constructor({
     isDarkModeOn = false,
     visitedDistanceThreshold = 1000,
+    isFirstLaunch = true,
   }: {
     isDarkModeOn?: boolean;
     visitedDistanceThreshold?: number;
+    isFirstLaunch?: boolean;
   }) {
     this.isDarkModeOn = isDarkModeOn;
     this.visitedDistanceThreshold = visitedDistanceThreshold;
+    this.isFirstLaunch = isFirstLaunch;
   }
 }
 
