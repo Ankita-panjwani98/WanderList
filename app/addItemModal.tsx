@@ -82,8 +82,8 @@ export default function AddNewItemModalScreen() {
     LocationGeocodedLocation | undefined
   >();
   const [description, setDescription] = useState("");
-  // const [rating, setRating] = useState<number | undefined>();
-  // const [priority, setPriority] = useState<number | undefined>();
+  const [rating, setRating] = useState<number | undefined>();
+  const [priority, setPriority] = useState<number | undefined>();
   // const [tag, setTag] = useState("");
   const [favourite, setFavourite] = useState(false);
 
@@ -95,8 +95,8 @@ export default function AddNewItemModalScreen() {
     setHasVisited(false);
     setCoordinates(undefined);
     setDescription("");
-    // setRating(undefined);
-    // setPriority(undefined);
+    setRating(undefined);
+    setPriority(undefined);
     // setTag("");
     setFavourite(false);
   };
@@ -122,8 +122,8 @@ export default function AddNewItemModalScreen() {
       createdOn: Date.now(),
       hasVisited,
       description,
-      // rating,
-      // priority,
+      rating,
+      priority,
       // tag,
       favourite,
     });
@@ -191,9 +191,8 @@ export default function AddNewItemModalScreen() {
         fetchDetails
       />
 
-      {/* <TextInput
+      <TextInput
         style={styles.input}
-        // value={String(rating)}
         value={rating !== undefined ? String(rating) : ""}
         onChangeText={(text) => setRating(Number(text))}
         placeholder="Rating (0-5)"
@@ -201,13 +200,12 @@ export default function AddNewItemModalScreen() {
       />
       <TextInput
         style={styles.input}
-        // value={String(priority)}
         value={priority !== undefined ? String(priority) : ""}
         onChangeText={(text) => setPriority(Number(text))}
         placeholder="Priority (0-3)"
         keyboardType="numeric"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         value={tag}
         onChangeText={setTag}
