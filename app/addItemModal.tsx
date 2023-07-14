@@ -81,8 +81,8 @@ export default function AddNewItemModalScreen() {
   //  undefined,
   // );
   const [description, setDescription] = useState("");
-  // const [rating, setRating] = useState<number | undefined>();
-  // const [priority, setPriority] = useState<number | undefined>();
+  const [rating, setRating] = useState<number | undefined>();
+  const [priority, setPriority] = useState<number | undefined>();
   // const [tag, setTag] = useState("");
   const [favourite, setFavourite] = useState(false);
 
@@ -94,8 +94,8 @@ export default function AddNewItemModalScreen() {
     setHasVisited(false);
     // setCoordinates(undefined);
     setDescription("");
-    // setRating(undefined);
-    // setPriority(undefined);
+    setRating(undefined);
+    setPriority(undefined);
     // setTag("");
     setFavourite(false);
   };
@@ -105,6 +105,16 @@ export default function AddNewItemModalScreen() {
 
     if (!address) {
       setError("Address input is required!");
+      return;
+    }
+
+    if (rating && rating > 5) {
+      setError("Rating should be set in range (0-5)!");
+      return;
+    }
+
+    if (priority && priority > 3) {
+      setError("Priority should be set in range (0-3)!");
       return;
     }
 
@@ -127,8 +137,8 @@ export default function AddNewItemModalScreen() {
           createdOn: Date.now(),
           hasVisited,
           description,
-          // rating,
-          // priority,
+          rating,
+          priority,
           // tag,
           favourite,
         });
@@ -172,7 +182,7 @@ export default function AddNewItemModalScreen() {
         onChangeText={setDescription}
         placeholder="Description"
       />
-      {/* <TextInput
+      <TextInput
         style={styles.input}
         // value={String(rating)}
         value={rating !== undefined ? String(rating) : ""}
@@ -188,7 +198,7 @@ export default function AddNewItemModalScreen() {
         placeholder="Priority (0-3)"
         keyboardType="numeric"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         value={tag}
         onChangeText={setTag}

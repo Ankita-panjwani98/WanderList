@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,9 +6,23 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { LocationObject } from "expo-location";
 import BucketListItem from "../../components/BucketListItem";
 import useDataContext from "../../context/DataContext";
 import Item from "../../DB/Item";
+import RadioButton from "../../components/RadioButton";
+import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
+import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
+
+const options = [
+  { label: "Priority", value: "priority" },
+  { label: "Rating", value: "rating" },
+  { label: "Distance", value: "distance" },
+  // { label: "Times Visited", value: "visited" },
+  { label: "None", value: null },
+];
 
 const styles = StyleSheet.create({
   container: {
@@ -20,44 +34,113 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  clearListBtn: {
+  addButtonContainer: {
+    position: "absolute",
+    bottom: 16,
+    right: 16,
     backgroundColor: "#3cb371",
-    width: "40%",
-    borderRadius: 5,
-    padding: 8,
-    color: "white",
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
   },
 });
 
 export default function ListTab() {
   const { bucketList } = useDataContext();
+  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<LocationObject | null>(
+    null
+  );
   const router = useRouter();
 
   const handleEditItem = (i: Item) => {
     router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
   };
 
-  return bucketList.items.length > 0 ? (
-    <ScrollView style={styles.container}>
-      {bucketList.items.map((item) => (
-        <TouchableOpacity key={item.id} onPress={() => handleEditItem(item)}>
-          <BucketListItem item={item} />
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  ) : (
-    <View style={styles.emptyListView}>
-      <Text style={{ color: "grey" }}>
-        Add a new item by pressing the + icon on top right
-      </Text>
+  const handleAddItem = () => {
+    // console.log("Add a new item")
+    router.push({ pathname: "/addItemModal" });
+  };
+
+  useEffect(() => {
+    const fetchCurrentLocation = async () => {
+      const location = await getCurrentPositionAsync();
+      setCurrentLocation(location);
+    };
+
+    fetchCurrentLocation();
+  }, []);
+
+  const sortedItems = bucketList.items.slice().sort((a, b) => {
+    switch (sortBy) {
+      case "priority":
+        return (a.priority ?? 0) - (b.priority ?? 0);
+      case "rating":
+        return (a.rating ?? 0) - (b.rating ?? 0);
+      case "distance":
+        if (currentLocation) {
+          const distance1 = getDistanceBetweenPoints(
+            currentLocation.coords,
+            a.coordinates
+          );
+          const distance2 = getDistanceBetweenPoints(
+            currentLocation.coords,
+            b.coordinates
+          );
+          return distance1 - distance2;
+        }
+        return 0;
+      // case "visited":
+      //   return 0;
+      default:
+        return a.createdOn - b.createdOn;
+    }
+  });
+
+  // const sortedItems = bucketList.items.slice().sort((a, b) => {
+  //   if (sortBy === "priority") {
+  //     return (a.priority ?? 0) - (b.priority ?? 0);
+  //   } else if (sortBy === "rating") {
+  //     return (a.rating ?? 0) - (b.rating ?? 0);
+  //   } else if (sortBy === "distance" && currentLocation) {
+  //     const distance1 = getDistanceBetweenPoints( currentLocation.coords, a.coordinates );
+  //     const distance2 = getDistanceBetweenPoints( currentLocation.coords, b.coordinates );
+  //     return distance1 - distance2;
+  //   // } else if (sortBy === "visited") {
+  //   //   return 0;
+  //   } else {
+  //     return a.createdOn - b.createdOn;
+  //   }
+  // });
+
+  return (
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ marginRight: 10 }}>Sort By:</Text>
+        </View>
+        <View>
+          <RadioButton
+            options={options}
+            selectedOption={sortBy}
+            onSelect={setSortBy}
+          />
+        </View>
+        {sortedItems.map((item) => (
+          <TouchableOpacity key={item.id} onPress={() => handleEditItem(item)}>
+            <BucketListItem item={item} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.addButtonContainer}
+        onPress={handleAddItem}
+      >
+        <AntDesign name="plus" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
