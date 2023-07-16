@@ -69,7 +69,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
       return;
     }
     setError("");
-    setSettings(new Settings({ visitedDistanceThreshold: value }));
+    setSettings(new Settings({ ...settings, visitedDistanceThreshold: value }));
     setVisitedDistance(String(value));
   };
 
