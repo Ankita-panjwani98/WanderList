@@ -60,20 +60,15 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="listTab"
-        options={{
-          title: "List",
-          tabBarIcon: ListIcon,
-          headerRight: () =>
-            Header({ href: "/addItemModal", icon: "plus-circle" }),
-        }}
+        options={{ headerShown: false, tabBarIcon: ListIcon, title: "List" }}
       />
+
       <Tabs.Screen
         name="statisticsTab"
         options={{
           title: "Statistics",
           tabBarIcon: StatisticsIcon,
-          headerRight: () =>
-            Header({ href: "/statisticsHelpModal", icon: "question-circle" }),
+          headerShown: false,
         }}
       />
       <Tabs.Screen

@@ -1,16 +1,9 @@
-import { useEffect } from "react";
 import { SplashScreen, Stack } from "expo-router";
 import useDataContext from "../context/DataContext";
-import Settings from "../DB/Settings";
 import OnBoardingScreen from "./onBoardingScreen";
 
 export default function RootLayoutStack() {
-  const { settings, setSettings, isFileRead } = useDataContext();
-
-  useEffect(() => {
-    setSettings(new Settings({ ...settings, isFirstLaunch: true }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { settings, isFileRead } = useDataContext();
 
   if (!isFileRead) return <SplashScreen />;
   if (settings.isFirstLaunch) {
