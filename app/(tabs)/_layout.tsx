@@ -54,8 +54,7 @@ export default function TabLayout() {
         options={{
           title: "List",
           tabBarIcon: ListIcon,
-          headerRight: () =>
-            Header({ href: "/addItemModal", icon: "plus-circle" }),
+          headerShown: false,
         }}
       />
 
