@@ -1,140 +1,63 @@
-import { StyleSheet, View, Alert } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { useEffect, useRef } from "react";
-import ItemMarker from "../../components/Marker";
+import { useRouter } from "expo-router";
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import BucketListItem from "../../components/BucketListItem";
 import useDataContext from "../../context/DataContext";
-import "react-native-gesture-handler";
-import requestLocationPermission from "../../utils/requestLocationPermission";
-import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
-import BucketList from "../../DB/BucketList";
-import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
+import Item from "../../DB/Item";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
   },
-  title: {
-    fontSize: 20,
+  emptyListView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clearListBtn: {
+    backgroundColor: "#3cb371",
+    width: "40%",
+    borderRadius: 5,
+    padding: 8,
+    color: "white",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  map: {
-    width: "100%",
-    height: "100%",
-  },
-  errorText: {
     textAlign: "center",
-    margin: 10,
-    color: "red",
   },
 });
 
-const DEFAULT_REGION_LONDON = {
-  latitude: 42.9877866,
-  longitude: -81.2459254,
-  latitudeDelta: 8,
-  longitudeDelta: 8,
-};
+export default function ListTab() {
+  const { bucketList } = useDataContext();
+  const router = useRouter();
 
-export default function MapTab() {
-  const { bucketList, setBucketList, settings } = useDataContext();
-  const mapRef = useRef<MapView | null>(null);
-  const visitedTimer = useRef<NodeJS.Timeout>();
-
-  // Request permission if not granted for first time when app opened
-  // Show alert if denied
-  useEffect(() => {
-    requestLocationPermission().then((granted) => {
-      if (!granted) {
-        Alert.alert(
-          "Location permission not granted.",
-          "Some features may not work correctly!"
-        );
-      }
-    });
-  });
-
-  // This function updates mapView to include all items
-  useEffect(() => {
-    if (!mapRef.current || !bucketList.items.length) return;
-
-    mapRef.current.fitToCoordinates(
-      bucketList.items.map((it) => it.coordinates),
-      {
-        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-        animated: true,
-      }
-    );
-  }, [bucketList]);
-
-  const updateVisited = async () => {
-    const currentLocation = await getCurrentPositionAsync();
-    if (!currentLocation) return;
-
-    const newBucketList = new BucketList([]);
-    let hasUpdated = false;
-
-    bucketList.items.forEach((item) => {
-      if (item.hasVisited) {
-        newBucketList.items.push(item);
-        return;
-      }
-
-      const distance = getDistanceBetweenPoints(
-        item.coordinates,
-        currentLocation.coords
-      );
-
-      if (distance * 1000 < settings.visitedDistanceThreshold) {
-        const newItem = { ...item };
-        newItem.hasVisited = true;
-        newItem.updatedOn = Date.now();
-        newBucketList.items.push(newItem);
-        hasUpdated = true;
-        Alert.alert(
-          `Welcome to ${item.title}`,
-          `Marking ${item.address} as visited!`
-        );
-      } else {
-        newBucketList.items.push(item);
-      }
-    });
-
-    if (hasUpdated) setBucketList(newBucketList);
+  const handleEditItem = (i: Item) => {
+    router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
   };
 
-  useEffect(() => {
-    if (visitedTimer.current) clearInterval(visitedTimer.current);
-    if (settings.visitedDistanceThreshold && bucketList.items.length) {
-      visitedTimer.current = setInterval(updateVisited, 5000);
-    }
-    return () => {
-      clearInterval(visitedTimer.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bucketList, settings]);
-
-  return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={DEFAULT_REGION_LONDON}
-        showsIndoors={false}
-        ref={(r) => {
-          mapRef.current = r;
-        }}
-        showsUserLocation
-        followsUserLocation
-      >
-        {bucketList.items.map((item) => (
-          <ItemMarker key={item.id} item={item} />
-        ))}
-      </MapView>
+  return bucketList.items.length > 0 ? (
+    <ScrollView style={styles.container}>
+      {bucketList.items.map((item) => (
+        <TouchableOpacity key={item.id} onPress={() => handleEditItem(item)}>
+          <BucketListItem item={item} />
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  ) : (
+    <View style={styles.emptyListView}>
+      <Text style={{ color: "grey" }}>
+        Add a new item by pressing the + icon on top right
+      </Text>
     </View>
   );
 }

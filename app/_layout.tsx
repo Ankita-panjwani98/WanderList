@@ -2,6 +2,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
 import SpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
+import Manrope from "../assets/fonts/Manrope-VariableFont_wght.ttf";
+import Firacode from "../assets/fonts/FiraCode-VariableFont_wght.ttf";
 import { DataProvider } from "../context/DataContext";
 import RootLayoutStack from "./rootLayoutStack";
 
@@ -12,7 +14,12 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const [loadedFonts] = useFonts({ SpaceMono, ...FontAwesome.font });
+  const [loadedFonts] = useFonts({
+    SpaceMono,
+    Firacode,
+    Manrope,
+    ...FontAwesome.font,
+  });
   if (!loadedFonts) return <SplashScreen />;
 
   return (

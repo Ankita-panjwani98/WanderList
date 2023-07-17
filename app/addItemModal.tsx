@@ -131,8 +131,7 @@ export default function AddNewItemModalScreen() {
 
     const newBucketList = new BucketList(bucketList.items.concat(newItem));
     setBucketList(newBucketList);
-
-    router.push("listTab");
+    router.push("MapTab");
   };
 
   const handleCancel = () => {

@@ -52,17 +52,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: "List",
+          tabBarIcon: ListIcon,
+          headerRight: () =>
+            Header({ href: "/addItemModal", icon: "plus-circle" }),
+        }}
+      />
+
+      <Tabs.Screen
+        name="MapTab"
+        options={{
           title: "Map",
           tabBarIcon: MapIcon,
           headerShown: false,
         }}
       />
-
-      <Tabs.Screen
-        name="listTab"
-        options={{ headerShown: false, tabBarIcon: ListIcon, title: "List" }}
-      />
-
       <Tabs.Screen
         name="statisticsTab"
         options={{
