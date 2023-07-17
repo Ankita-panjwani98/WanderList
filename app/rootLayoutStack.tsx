@@ -7,11 +7,6 @@ import OnBoardingScreen from "./onBoardingScreen";
 export default function RootLayoutStack() {
   const { settings, setSettings, isFileRead } = useDataContext();
 
-  useEffect(() => {
-    setSettings(new Settings({ ...settings, isFirstLaunch: true }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   if (!isFileRead) return <SplashScreen />;
   if (settings.isFirstLaunch) {
     return <OnBoardingScreen />;
