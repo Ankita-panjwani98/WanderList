@@ -1,4 +1,5 @@
 import { useState } from "react";
+import StarRating from "react-native-star-rating";
 import {
   Alert,
   StyleSheet,
@@ -85,20 +86,16 @@ export default function EditItemModal() {
   const [error, setError] = useState("");
   const [title, setTitle] = useState(item?.title);
   const [address, setAddress] = useState(item?.address);
-
   const [coordinates, setCoordinates] = useState<
     LocationGeocodedLocation | undefined
   >(item?.coordinates);
   const [hasVisited, setHasVisited] = useState(item?.hasVisited);
   const [description, setDescription] = useState(item?.description || "");
-  const [rating, setRating] = useState(item?.rating || undefined);
+  const [selectedRating, setRating] = useState(item?.rating || undefined);
   const [priority, setPriority] = useState(item?.priority || undefined);
-  // const [tag, setTag] = useState(item?.tag || "");
   const [favourite, setFavourite] = useState(item?.favourite || false);
 
   const handleSave = () => {
-    if (!item) return;
-
     setError("");
 
     if (!address) {
@@ -111,30 +108,27 @@ export default function EditItemModal() {
       return;
     }
 
-    if (rating && rating > 5) {
-      setError("Rating should be set in range (0-5)!");
+    if (selectedRating && (selectedRating < 0 || selectedRating > 5)) {
+      setError("Rating should be set in the range (0-5)!");
       return;
     }
 
-    if (priority && priority > 3) {
-      setError("Priority should be set in range (0-3)!");
+    if (priority && (priority < 0 || priority > 3)) {
+      setError("Priority should be set in the range (0-3)!");
       return;
     }
 
     const updatedItem = {
-      ...item,
-      ...{
-        title: title || address,
-        address,
-        coordinates,
-        updatedOn: Date.now(),
-        hasVisited,
-        description,
-        rating,
-        priority,
-        // tag,
-        favourite,
-      },
+      ...item!,
+      title: title || address!,
+      address,
+      coordinates,
+      updatedOn: Date.now(),
+      hasVisited: hasVisited!,
+      description,
+      rating: selectedRating,
+      priority,
+      favourite,
     };
 
     const updatedList = bucketList.items.map((i) =>
@@ -198,15 +192,6 @@ export default function EditItemModal() {
           placeholder="Title"
         />
 
-        {/* <TextInput
-          style={styles.input}
-          value={coordinates.join(", ")}
-          onChangeText={(text) =>
-            setCoordinates(text.split(",").map((coord) => Number(coord.trim())))
-          }
-          placeholder="Coordinates (e.g., latitude, longitude)"
-        /> */}
-
         <TextInput
           style={styles.input}
           value={description}
@@ -249,13 +234,17 @@ export default function EditItemModal() {
           disableScroll
           fetchDetails
         />
-        <TextInput
-          style={styles.input}
-          value={rating !== undefined ? String(rating) : ""}
-          onChangeText={(text) => setRating(Number(text))}
-          placeholder="Rating (0-5)"
-          keyboardType="numeric"
+
+        <StarRating
+          disabled={false}
+          maxStars={5}
+          rating={selectedRating !== undefined ? selectedRating : 0}
+          selectedStar={(rating) => setRating(rating)}
+          starSize={25}
+          fullStarColor="gold"
+          emptyStarColor="gray"
         />
+
         <TextInput
           style={styles.input}
           value={priority !== undefined ? String(priority) : ""}
@@ -263,12 +252,6 @@ export default function EditItemModal() {
           placeholder="Priority (0-3)"
           keyboardType="numeric"
         />
-        {/* <TextInput
-          style={styles.input}
-          value={tag}
-          onChangeText={setTag}
-          placeholder="Tag"
-        /> */}
 
         <View style={styles.switchContainer}>
           <Text>Opened/Visited:</Text>
@@ -290,7 +273,7 @@ export default function EditItemModal() {
         </View>
 
         <View style={styles.errorView}>
-          <Text style={{ color: "red" }}> {error} </Text>
+          <Text style={{ color: "red" }}>{error}</Text>
         </View>
       </View>
     </>

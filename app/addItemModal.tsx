@@ -1,4 +1,5 @@
 import { useState } from "react";
+import StarRating from "react-native-star-rating";
 import { StatusBar } from "expo-status-bar";
 import {
   Platform,
@@ -139,6 +140,10 @@ export default function AddNewItemModalScreen() {
     router.back();
   };
 
+  const handleRatingChange = (selectedRating: number) => {
+    setRating(selectedRating);
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -191,13 +196,16 @@ export default function AddNewItemModalScreen() {
         fetchDetails
       />
 
-      <TextInput
-        style={styles.input}
-        value={rating !== undefined ? String(rating) : ""}
-        onChangeText={(text) => setRating(Number(text))}
-        placeholder="Rating (0-5)"
-        keyboardType="numeric"
+      <StarRating
+        disabled={false}
+        maxStars={5}
+        rating={rating !== undefined ? rating : 0}
+        selectedStar={handleRatingChange}
+        starSize={40}
+        fullStarColor="gold"
+        emptyStarColor="gray"
       />
+
       <TextInput
         style={styles.input}
         value={priority !== undefined ? String(priority) : ""}
@@ -205,12 +213,7 @@ export default function AddNewItemModalScreen() {
         placeholder="Priority (0-3)"
         keyboardType="numeric"
       />
-      {/* <TextInput
-        style={styles.input}
-        value={tag}
-        onChangeText={setTag}
-        placeholder="Tag"
-      /> */}
+
       <View style={styles.switchContainer}>
         <Text>Opened/Visited:</Text>
         <Switch value={hasVisited} onValueChange={setHasVisited} />
