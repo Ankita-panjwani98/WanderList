@@ -78,7 +78,7 @@ export default function ListTab() {
       case "priority":
         return (a.priority ?? 0) - (b.priority ?? 0);
       case "rating":
-        return (a.rating ?? 0) - (b.rating ?? 0);
+        return (b.rating ?? 0) - (a.rating ?? 0);
       case "distance":
         if (currentLocation) {
           const distance1 = getDistanceBetweenPoints(
@@ -95,7 +95,7 @@ export default function ListTab() {
       // case "visited":
       //   return 0;
       default:
-        return a.createdOn - b.createdOn;
+        return b.createdOn - a.createdOn;
     }
   });
 
