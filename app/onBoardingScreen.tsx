@@ -6,6 +6,7 @@ import WishlistImage from "../assets/images/1.png";
 import ManageListImage from "../assets/images/2.png";
 import VisualizeMapImage from "../assets/images/3.png";
 
+
 function Done({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={onPress}>
