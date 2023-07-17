@@ -1,12 +1,16 @@
+import { FontAwesome } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
-  StyleSheet,
-  Text,
-  ScrollView,
-  Platform,
-  View,
   Image,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  Text,
+  View,
+  TouchableOpacity,
 } from "react-native";
 import * as Progress from "react-native-progress";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GraphImage } from "../../components/Media";
 import useDataContext from "../../context/DataContext";
 import Item from "../../DB/Item";
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     marginTop: "18%",
     fontSize: 16,
     color: "#327063",
-    fontWeight: "600",
   },
   totalDistanceNumber: {
     marginTop: "18%",
@@ -135,6 +138,7 @@ const styles = StyleSheet.create({
 
 export default function StatisticsTab() {
   const { bucketList } = useDataContext();
+  const router = useRouter();
 
   const totalPlaces = bucketList.items.length;
   const visitedPlaces: Item[] = bucketList.items
@@ -166,114 +170,128 @@ export default function StatisticsTab() {
   const favouritePercentage =
     totalPlaces === 0 ? 0 : (favouriteCount / totalPlaces) * 100;
 
-  return bucketList.items.length > 0 ? (
-    <ScrollView style={styles.container}>
-      <View style={{ alignItems: "center" }}>
-        <Image source={GraphImage} style={{ width: 220, height: 220 }} />
-      </View>
-
-      <View style={styles.statisticsContainer}>
-        {/* total places */}
-        <View style={styles.totalPlacesContainer}>
-          <View>
-            <Text style={styles.totalPlaces}>Saved Places:</Text>
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      {bucketList.items.length > 0 ? (
+        <ScrollView style={styles.container}>
+          <TouchableOpacity
+            onPress={() => router.push("settingsHelpModal")}
+            style={{
+              position: "absolute",
+              right: 20,
+              zIndex: 2,
+            }}
+          >
+            <FontAwesome size={20} name="info-circle" color="grey" />
+          </TouchableOpacity>
+          <View style={{ alignItems: "center" }}>
+            <Image source={GraphImage} style={{ width: 220, height: 220 }} />
           </View>
 
-          <View style={styles.numbercontainer}>
-            <Text style={styles.number}>{totalPlaces}</Text>
-          </View>
-        </View>
-
-        <View style={styles.divider} />
-
-        {/* progress container */}
-        <View style={styles.progressContainer}>
-          {/* visited */}
-          <View style={styles.visitedPlacesContainer}>
-            <View style={styles.textcontainer}>
+          <View style={styles.statisticsContainer}>
+            <View style={styles.totalPlacesContainer}>
               <View>
-                <Text style={styles.unvisitedText}>Places visited:</Text>
+                <Text style={styles.totalPlaces}>Saved Places:</Text>
               </View>
-              <View style={styles.countContainer}>
-                <Text style={styles.number}>{visitedCount}</Text>
+
+              <View style={styles.numbercontainer}>
+                <Text style={styles.number}>{totalPlaces}</Text>
               </View>
             </View>
 
-            <Progress.Bar
-              height={25}
-              progress={visitedPercentage / 100}
-              width={300}
-              animationType="spring"
-              borderRadius={30}
-              color="#45c449"
-            />
+            <View style={styles.divider} />
 
-            <Text style={styles.progressLabel}>{`${Math.round(
-              visitedPercentage
-            )}% visited`}</Text>
-          </View>
-          {/* unvisited */}
-          <View style={styles.unvisitedPlacesContainer}>
-            <View style={styles.textcontainer}>
-              <View>
-                <Text style={styles.unvisitedText}>Places not visited:</Text>
+            <View style={styles.progressContainer}>
+              <View style={styles.visitedPlacesContainer}>
+                <View style={styles.textcontainer}>
+                  <View>
+                    <Text style={styles.unvisitedText}>Places visited:</Text>
+                  </View>
+                  <View style={styles.countContainer}>
+                    <Text style={styles.number}>{visitedCount}</Text>
+                  </View>
+                </View>
+
+                <Progress.Bar
+                  height={25}
+                  progress={visitedPercentage / 100}
+                  width={300}
+                  animationType="spring"
+                  borderRadius={30}
+                  color="#45c449"
+                />
+
+                <Text style={styles.progressLabel}>
+                  {`${Math.round(visitedPercentage)}% visited`}
+                </Text>
               </View>
-              <View style={styles.countContainer}>
-                <Text style={styles.number}>{unvisitedCount}</Text>
+              <View style={styles.unvisitedPlacesContainer}>
+                <View style={styles.textcontainer}>
+                  <View>
+                    <Text style={styles.unvisitedText}>
+                      Places not visited:
+                    </Text>
+                  </View>
+                  <View style={styles.countContainer}>
+                    <Text style={styles.number}>{unvisitedCount}</Text>
+                  </View>
+                </View>
+
+                <Progress.Bar
+                  height={25}
+                  progress={unvisitedPercentage / 100}
+                  width={300}
+                  animationType="spring"
+                  borderRadius={30}
+                  color="#cf6146"
+                />
+
+                <Text style={styles.progressLabel}>
+                  {`${Math.round(unvisitedPercentage)}% unvisited`}
+                </Text>
+              </View>
+
+              <View style={styles.unvisitedPlacesContainer}>
+                <View style={styles.textcontainer}>
+                  <View>
+                    <Text style={styles.unvisitedText}>Favourite places:</Text>
+                  </View>
+                  <View style={styles.countContainer}>
+                    <Text style={styles.number}>{favouriteCount}</Text>
+                  </View>
+                </View>
+
+                <Progress.Bar
+                  height={25}
+                  progress={favouritePercentage / 100}
+                  width={300}
+                  animationType="spring"
+                  borderRadius={30}
+                  color="#f2c477"
+                />
+
+                <Text style={styles.progressLabel}>
+                  {`${Math.round(favouritePercentage)}% favourite`}
+                </Text>
               </View>
             </View>
-
-            <Progress.Bar
-              height={25}
-              progress={unvisitedPercentage / 100}
-              width={300}
-              animationType="spring"
-              borderRadius={30}
-              color="#cf6146"
-            />
-
-            <Text style={styles.progressLabel}>{`${Math.round(
-              unvisitedPercentage
-            )}% unvisited`}</Text>
-          </View>
-
-          <View style={styles.unvisitedPlacesContainer}>
-            <View style={styles.textcontainer}>
-              <View>
-                <Text style={styles.unvisitedText}>Favourite places:</Text>
-              </View>
-              <View style={styles.countContainer}>
-                <Text style={styles.number}>{favouriteCount}</Text>
-              </View>
+            <View style={styles.totalPlacesContainer}>
+              <Text style={styles.totalDistanceText}>
+                Distance Traveled: 🚀
+              </Text>
+              <Text style={styles.totalDistanceNumber}>
+                {totalDisplacement.toFixed(2)} kms
+              </Text>
             </View>
-
-            <Progress.Bar
-              height={25}
-              progress={favouritePercentage / 100}
-              width={300}
-              animationType="spring"
-              borderRadius={30}
-              color="#f2c477"
-            />
-
-            <Text style={styles.progressLabel}>{`${Math.round(
-              favouritePercentage
-            )}% favourite`}</Text>
           </View>
-        </View>
-        <View style={styles.totalPlacesContainer}>
-          <Text style={styles.totalDistanceText}>Distance Traveled: 🚀</Text>
-          <Text style={styles.totalDistanceNumber}>
-            {totalDisplacement.toFixed(2)} kms
+        </ScrollView>
+      ) : (
+        <View style={styles.emptyListView}>
+          <Text style={{ color: "grey" }}>
+            Add any new place to see the statistics.
           </Text>
         </View>
-      </View>
-    </ScrollView>
-  ) : (
-    <View style={styles.emptyListView}>
-      <Text style={{ color: "grey" }}>
-        Add any new place to see the statistics.
-      </Text>
-    </View>
+      )}
+    </SafeAreaView>
   );
 }

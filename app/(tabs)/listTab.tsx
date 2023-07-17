@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LocationObject } from "expo-location";
+import { SafeAreaView } from "react-native-safe-area-context";
 import BucketListItem from "../../components/BucketListItem";
 import useDataContext from "../../context/DataContext";
 import Item from "../../DB/Item";
@@ -17,11 +18,10 @@ import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
 
 const options = [
+  { label: "Created", value: "createdOn" },
   { label: "Priority", value: "priority" },
   { label: "Rating", value: "rating" },
   { label: "Distance", value: "distance" },
-  // { label: "Times Visited", value: "visited" },
-  { label: "None", value: null },
 ];
 
 const styles = StyleSheet.create({
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 
 export default function ListTab() {
   const { bucketList } = useDataContext();
-  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<string>(options[0].value);
   const [currentLocation, setCurrentLocation] = useState<LocationObject | null>(
     null
   );
@@ -100,12 +100,19 @@ export default function ListTab() {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ marginRight: 10 }}>Sort By:</Text>
-        </View>
-        <View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            margin: 10,
+            borderBottomColor: "lightgrey",
+            borderBottomWidth: 0.5,
+            paddingBottom: 10,
+          }}
+        >
+          <Text style={{ color: "#222" }}>Sort By | </Text>
           <RadioButton
             options={options}
             selectedOption={sortBy}
@@ -124,6 +131,6 @@ export default function ListTab() {
       >
         <AntDesign name="plus" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }

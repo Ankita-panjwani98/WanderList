@@ -5,7 +5,7 @@ import Settings from "../DB/Settings";
 import IconGold from "../assets/images/icon-gold.png";
 import IconBlue from "../assets/images/icon-blue.png";
 
-function Done({ onPress }) {
+function Done({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={onPress}>
       <Text style={{ fontSize: 16 }}>Done</Text>
