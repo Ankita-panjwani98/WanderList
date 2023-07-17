@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { geocodeAsync } from "expo-location";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { LocationGeocodedLocation } from "expo-location";
 import { useRouter } from "expo-router";
+import Constants from "expo-constants";
 import generateUUID from "../utils/generateUUID";
 import useDataContext from "../context/DataContext";
 import Item from "../DB/Item";
@@ -19,8 +21,8 @@ import BucketList from "../DB/BucketList";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-start",
     alignItems: "center",
-    justifyContent: "center",
   },
   input: {
     borderBottomWidth: 1,
@@ -30,8 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   addressInput: {
-    borderColor: "black",
-    color: "black",
+    backgroundColor: "white",
   },
   switchContainer: {
     flexDirection: "row",
@@ -77,12 +78,12 @@ export default function AddNewItemModalScreen() {
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [hasVisited, setHasVisited] = useState(false);
-  // const [coordinates, setCoordinates] = useState<[number, number] | undefined>(
-  //  undefined,
-  // );
+  const [coordinates, setCoordinates] = useState<
+    LocationGeocodedLocation | undefined
+  >();
   const [description, setDescription] = useState("");
-  // const [rating, setRating] = useState<number | undefined>();
-  // const [priority, setPriority] = useState<number | undefined>();
+  const [rating, setRating] = useState<number | undefined>();
+  const [priority, setPriority] = useState<number | undefined>();
   // const [tag, setTag] = useState("");
   const [favourite, setFavourite] = useState(false);
 
@@ -92,10 +93,10 @@ export default function AddNewItemModalScreen() {
     setTitle("");
     setAddress("");
     setHasVisited(false);
-    // setCoordinates(undefined);
+    setCoordinates(undefined);
     setDescription("");
-    // setRating(undefined);
-    // setPriority(undefined);
+    setRating(undefined);
+    setPriority(undefined);
     // setTag("");
     setFavourite(false);
   };
@@ -108,41 +109,28 @@ export default function AddNewItemModalScreen() {
       return;
     }
 
-    geocodeAsync(address)
-      .then((data) => {
-        const [coordinates] = data;
+    if (!coordinates) {
+      setError("Coordinates not found!");
+      return;
+    }
 
-        if (!coordinates) {
-          setError(
-            "Location coordinates could not be fetched!  Please try with a different address."
-          );
-          return;
-        }
+    const newItem = new Item({
+      id: generateUUID(),
+      title: title || address,
+      address,
+      coordinates,
+      createdOn: Date.now(),
+      hasVisited,
+      description,
+      rating,
+      priority,
+      // tag,
+      favourite,
+    });
 
-        const newItem = new Item({
-          id: generateUUID(),
-          title: title || address,
-          address,
-          coordinates,
-          createdOn: Date.now(),
-          hasVisited,
-          description,
-          // rating,
-          // priority,
-          // tag,
-          favourite,
-        });
-        const newBucketList = new BucketList(bucketList.items.concat(newItem));
-        setBucketList(newBucketList);
-
-        router.push("MapTab");
-      })
-      .catch((err) => {
-        console.error(err);
-        setError(
-          "Unexpected error occured while fetching coordinates, please try again later!"
-        );
-      });
+    const newBucketList = new BucketList(bucketList.items.concat(newItem));
+    setBucketList(newBucketList);
+    router.push("MapTab");
   };
 
   const handleCancel = () => {
@@ -160,21 +148,50 @@ export default function AddNewItemModalScreen() {
       />
 
       <TextInput
-        style={[styles.input, styles.addressInput]}
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Address"
-      />
-
-      <TextInput
         style={styles.input}
         value={description}
         onChangeText={setDescription}
         placeholder="Description"
       />
-      {/* <TextInput
+
+      <GooglePlacesAutocomplete
+        placeholder="Address"
+        onPress={(_, details = null) => {
+          if (!details) {
+            setError("Error while adding place: Coordinates not found!");
+            return;
+          }
+
+          const {
+            location: { lat: latitude, lng: longitude },
+          } = details.geometry;
+
+          setCoordinates({ latitude, longitude });
+          setAddress(details.formatted_address);
+        }}
+        query={{
+          key: Constants.expoConfig?.android?.config?.googleMaps?.apiKey,
+          language: "en",
+        }}
+        styles={{
+          container: {
+            alignItems: "center",
+            justifyContent: "center",
+            width: "80%",
+            flex: 0,
+          },
+          textInput: { ...styles.input, ...styles.addressInput },
+        }}
+        suppressDefaultStyles={false}
+        enablePoweredByContainer={false}
+        debounce={200}
+        minLength={2}
+        disableScroll
+        fetchDetails
+      />
+
+      <TextInput
         style={styles.input}
-        // value={String(rating)}
         value={rating !== undefined ? String(rating) : ""}
         onChangeText={(text) => setRating(Number(text))}
         placeholder="Rating (0-5)"
@@ -182,13 +199,12 @@ export default function AddNewItemModalScreen() {
       />
       <TextInput
         style={styles.input}
-        // value={String(priority)}
         value={priority !== undefined ? String(priority) : ""}
         onChangeText={(text) => setPriority(Number(text))}
         placeholder="Priority (0-3)"
         keyboardType="numeric"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         value={tag}
         onChangeText={setTag}

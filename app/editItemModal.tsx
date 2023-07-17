@@ -9,8 +9,10 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { geocodeAsync } from "expo-location";
+import { LocationGeocodedLocation } from "expo-location";
 import { FontAwesome } from "@expo/vector-icons";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Constants from "expo-constants";
 import useDataContext from "../context/DataContext";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
@@ -84,11 +86,13 @@ export default function EditItemModal() {
   const [title, setTitle] = useState(item?.title);
   const [address, setAddress] = useState(item?.address);
 
-  // const [coordinates, setCoordinates] = useState(item.coordinates || []);
+  const [coordinates, setCoordinates] = useState<
+    LocationGeocodedLocation | undefined
+  >(item?.coordinates);
   const [hasVisited, setHasVisited] = useState(item?.hasVisited);
   const [description, setDescription] = useState(item?.description || "");
-  // const [rating, setRating] = useState(item?.rating || undefined);
-  // const [priority, setPriority] = useState(item?.priority || undefined);
+  const [rating, setRating] = useState(item?.rating || undefined);
+  const [priority, setPriority] = useState(item?.priority || undefined);
   // const [tag, setTag] = useState(item?.tag || "");
   const [favourite, setFavourite] = useState(item?.favourite || false);
 
@@ -102,57 +106,44 @@ export default function EditItemModal() {
       return;
     }
 
-    // if (rating && rating > 5) {
-    //   setError("Rating should be set in range (0-5)!");
-    //   return;
-    // }
+    if (!coordinates) {
+      setError("Coordinates not found!");
+      return;
+    }
 
-    // if (priority && priority > 3) {
-    //   setError("Priority should be set in range (0-3)!");
-    //   return;
-    // }
+    if (rating && rating > 5) {
+      setError("Rating should be set in range (0-5)!");
+      return;
+    }
 
-    geocodeAsync(address)
-      .then((data) => {
-        const [coordinates] = data;
+    if (priority && priority > 3) {
+      setError("Priority should be set in range (0-3)!");
+      return;
+    }
 
-        if (!coordinates) {
-          setError(
-            "Location coordinates could not be fetched! Please try with a different address."
-          );
-          return;
-        }
+    const updatedItem = {
+      ...item,
+      ...{
+        title: title || address,
+        address,
+        coordinates,
+        updatedOn: Date.now(),
+        hasVisited,
+        description,
+        rating,
+        priority,
+        // tag,
+        favourite,
+      },
+    };
 
-        const updatedItem = {
-          ...item,
-          ...{
-            title: title || address,
-            address,
-            coordinates,
-            updatedOn: Date.now(),
-            hasVisited,
-            description,
-            // rating,
-            // priority,
-            // tag,
-            favourite,
-          },
-        };
+    const updatedList = bucketList.items.map((i) =>
+      i.id === updatedItem.id ? updatedItem : i
+    );
 
-        const updatedList = bucketList.items.map((i) =>
-          i.id === updatedItem.id ? updatedItem : i
-        );
+    setBucketList(new BucketList(updatedList));
 
-        setBucketList(new BucketList(updatedList));
-
-        router.back();
-      })
-      .catch((err) => {
-        console.error(err);
-        setError(
-          "Unexpected error occured while fetching coordinates, please try again later!"
-        );
-      });
+    router.back();
   };
 
   const handleDeleteItem = (i: Item) => {
@@ -206,12 +197,6 @@ export default function EditItemModal() {
           onChangeText={setTitle}
           placeholder="Title"
         />
-        <TextInput
-          style={styles.input}
-          value={address}
-          onChangeText={setAddress}
-          placeholder="Address"
-        />
 
         {/* <TextInput
           style={styles.input}
@@ -228,7 +213,43 @@ export default function EditItemModal() {
           onChangeText={setDescription}
           placeholder="Description"
         />
-        {/* <TextInput
+
+        <GooglePlacesAutocomplete
+          placeholder={address || "Address"}
+          onPress={(_, details = null) => {
+            if (!details) {
+              setError("Error while adding place: Coordinates not found!");
+              return;
+            }
+
+            const {
+              location: { lat: latitude, lng: longitude },
+            } = details.geometry;
+
+            setCoordinates({ latitude, longitude });
+            setAddress(details.formatted_address);
+          }}
+          query={{
+            key: Constants.expoConfig?.android?.config?.googleMaps?.apiKey,
+            language: "en",
+          }}
+          styles={{
+            container: {
+              alignItems: "center",
+              justifyContent: "center",
+              width: "80%",
+              flex: 0,
+            },
+            textInput: styles.input,
+          }}
+          suppressDefaultStyles={false}
+          enablePoweredByContainer={false}
+          debounce={200}
+          minLength={2}
+          disableScroll
+          fetchDetails
+        />
+        <TextInput
           style={styles.input}
           value={rating !== undefined ? String(rating) : ""}
           onChangeText={(text) => setRating(Number(text))}
@@ -242,7 +263,7 @@ export default function EditItemModal() {
           placeholder="Priority (0-3)"
           keyboardType="numeric"
         />
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={tag}
           onChangeText={setTag}
