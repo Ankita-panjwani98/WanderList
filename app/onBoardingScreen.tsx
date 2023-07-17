@@ -2,9 +2,9 @@ import { Image, TouchableOpacity, Text } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 import useDataContext from "../context/DataContext";
 import Settings from "../DB/Settings";
-import IconGold from "../assets/images/1.png";
-import IconBlue from "../assets/images/2.png";
-import IconGreen from "../assets/images/3.png";
+import WishList from "../assets/images/1.png";
+import ManageList from "../assets/images/2.png";
+import VisualizeMap from "../assets/images/3.png";
 
 function Done({ onPress }: { onPress: () => void }) {
   return (
@@ -40,7 +40,7 @@ export default function OnBoardingScreen() {
         {
           backgroundColor: "#dce4f5",
           image: (
-            <Image style={{ width: 350, height: 350 }} source={IconGreen} />
+            <Image style={{ width: 350, height: 350 }} source={VisualizeMap} />
           ),
           title: "Manage Your Travel Wishlist",
           subtitle:
@@ -49,7 +49,7 @@ export default function OnBoardingScreen() {
         {
           backgroundColor: "#F4FFE2",
           image: (
-            <Image style={{ width: 350, height: 350 }} source={IconGold} />
+            <Image style={{ width: 350, height: 350 }} source={WishList} />
           ),
           title: "Organize Visited and Unvisited Places",
           subtitle:
@@ -58,7 +58,7 @@ export default function OnBoardingScreen() {
         {
           backgroundColor: "#d8f2f1",
           image: (
-            <Image style={{ width: 350, height: 350 }} source={IconBlue} />
+            <Image style={{ width: 350, height: 350 }} source={ManageList} />
           ),
           title: "Visualize Your Travel Journey",
           subtitle:
