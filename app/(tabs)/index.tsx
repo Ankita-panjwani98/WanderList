@@ -57,11 +57,11 @@ export default function ListTab() {
   const router = useRouter();
 
   const handleEditItem = (i: Item) => {
-    router.push({ pathname: "/editItemModal", params: { itemId: i.id } });
+    router.push({ pathname: "/itemModal", params: { itemId: i.id } });
   };
 
   const handleAddItem = () => {
-    router.push({ pathname: "/addItemModal" });
+    router.push({ pathname: "/itemModal" });
   };
 
   useEffect(() => {
