@@ -13,12 +13,8 @@ export default function RootLayoutStack() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="addItemModal"
-        options={{ headerTitle: "Add Item", presentation: "modal" }}
-      />
-      <Stack.Screen
-        name="editItemModal"
-        options={{ headerTitle: "Edit Item", presentation: "modal" }}
+        name="itemModal"
+        options={{ headerTitle: "Item Details", presentation: "modal" }}
       />
       <Stack.Screen
         name="statisticsHelpModal"

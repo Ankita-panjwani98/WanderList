@@ -1,9 +1,8 @@
 import { useState } from "react";
-import StarRating from "react-native-star-rating";
 import {
   Alert,
   StyleSheet,
-  Switch,
+  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -17,6 +16,9 @@ import Constants from "expo-constants";
 import useDataContext from "../context/DataContext";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
+import CustomRating from "../components/CustomRating";
+import { IconGreen, IconGrey } from "../components/Media";
+import generateUUID from "../utils/generateUUID";
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     marginTop: 10,
+    alignItems: "center",
   },
   deleteButton: {
     marginHorizontal: 10,
@@ -76,23 +79,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function EditItemModal() {
-  const { bucketList, setBucketList } = useDataContext();
+export default function ItemModal() {
   const router = useRouter();
-  const { itemId } = useLocalSearchParams();
 
+  const { bucketList, setBucketList } = useDataContext();
+  const { itemId } = useLocalSearchParams();
   const item = bucketList.items.find((i) => i.id === itemId);
 
   const [error, setError] = useState("");
-  const [title, setTitle] = useState(item?.title);
-  const [address, setAddress] = useState(item?.address);
+  const [title, setTitle] = useState(item?.title ?? "");
+  const [address, setAddress] = useState(item?.address ?? "");
   const [coordinates, setCoordinates] = useState<
     LocationGeocodedLocation | undefined
   >(item?.coordinates);
-  const [hasVisited, setHasVisited] = useState(item?.hasVisited);
-  const [description, setDescription] = useState(item?.description || "");
-  const [selectedRating, setRating] = useState(item?.rating || undefined);
-  const [priority, setPriority] = useState(item?.priority || undefined);
+  const [hasVisited, setHasVisited] = useState(item?.hasVisited || false);
+  const [description, setDescription] = useState(item?.description ?? "");
+  const [rating, setRating] = useState(item?.rating ?? 0);
+  const [priority, setPriority] = useState(item?.priority ?? 0);
   const [favourite, setFavourite] = useState(item?.favourite || false);
 
   const handleSave = () => {
@@ -108,36 +111,35 @@ export default function EditItemModal() {
       return;
     }
 
-    if (selectedRating && (selectedRating < 0 || selectedRating > 5)) {
-      setError("Rating should be set in the range (0-5)!");
-      return;
-    }
-
-    if (priority && (priority < 0 || priority > 3)) {
-      setError("Priority should be set in the range (0-3)!");
-      return;
-    }
-
-    const updatedItem = {
-      ...item!,
-      title: title || address!,
+    const newItem = {
+      id: item?.id ?? generateUUID(),
+      createdOn: item?.createdOn ?? Date.now(),
+      title: title || address,
       address,
       coordinates,
-      updatedOn: Date.now(),
-      hasVisited: hasVisited!,
+      hasVisited,
       description,
-      rating: selectedRating,
+      rating,
       priority,
       favourite,
+      updatedOn: Date.now(),
     };
 
-    const updatedList = bucketList.items.map((i) =>
-      i.id === updatedItem.id ? updatedItem : i
-    );
+    let updatedList;
 
-    setBucketList(new BucketList(updatedList));
+    if (!itemId) {
+      // Creating an item
+      updatedList = new BucketList(bucketList.items.concat(newItem));
+    } else {
+      // Updating an item
+      updatedList = new BucketList(
+        bucketList.items.map((i) => (i.id === newItem.id ? newItem : i))
+      );
+    }
 
-    router.back();
+    setBucketList(updatedList);
+
+    router.push("MapTab");
   };
 
   const handleDeleteItem = (i: Item) => {
@@ -166,20 +168,32 @@ export default function EditItemModal() {
     router.back();
   };
 
-  if (!item) return <Text>Item not found</Text>;
-
   return (
     <>
       <View style={styles.buttonContainer}>
+        {item ? (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDeleteItem(item)}
+          >
+            <FontAwesome
+              size={30}
+              style={{ marginBottom: -3 }}
+              name="trash"
+              color="red"
+            />
+          </TouchableOpacity>
+        ) : null}
+
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={() => handleDeleteItem(item)}
+          onPress={() => setFavourite(!favourite)}
         >
           <FontAwesome
             size={30}
             style={{ marginBottom: -3 }}
-            name="trash"
-            color="#db5c40"
+            name="star"
+            color={favourite ? "orange" : "lightgray"}
           />
         </TouchableOpacity>
       </View>
@@ -235,32 +249,38 @@ export default function EditItemModal() {
           fetchDetails
         />
 
-        <StarRating
-          disabled={false}
-          maxStars={5}
-          rating={selectedRating !== undefined ? selectedRating : 0}
-          selectedStar={(rating) => setRating(rating)}
-          starSize={25}
-          fullStarColor="gold"
-          emptyStarColor="gray"
+        <CustomRating
+          type="bell"
+          handleRatingChange={(p) => setPriority(p)}
+          label="Priority: "
+          ratingCount={3}
         />
 
-        <TextInput
-          style={styles.input}
-          value={priority !== undefined ? String(priority) : ""}
-          onChangeText={(text) => setPriority(Number(text))}
-          placeholder="Priority (0-3)"
-          keyboardType="numeric"
+        <CustomRating
+          type="heart"
+          handleRatingChange={(r) => setRating(r)}
+          label="Rating: "
+          ratingCount={5}
         />
 
         <View style={styles.switchContainer}>
-          <Text>Opened/Visited:</Text>
-          <Switch value={hasVisited} onValueChange={setHasVisited} />
-        </View>
-
-        <View style={styles.switchContainer}>
-          <Text>Favourite:</Text>
-          <Switch value={favourite} onValueChange={setFavourite} />
+          <Text>Visited?</Text>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => setHasVisited(!hasVisited)}
+          >
+            {hasVisited ? (
+              <Image
+                source={IconGreen}
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            ) : (
+              <Image source={IconGrey} style={{ width: 30, height: 30 }} />
+            )}
+          </TouchableOpacity>
         </View>
 
         <View style={styles.bottomButtonContainer}>
