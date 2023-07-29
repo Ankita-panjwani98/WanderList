@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,11 +18,17 @@ import RadioButton from "../../components/RadioButton";
 import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
 
-const options = [
+const sortOptions = [
   { label: "Created", value: "createdOn" },
   { label: "Priority", value: "priority" },
   { label: "Rating", value: "rating" },
   { label: "Distance", value: "distance" },
+];
+
+const filterOptions = [
+  { label: "Favourites", value: "favourite" },
+  { label: "Visited", value: "visited" },
+  { label: "Unvisited", value: "unvisited" },
 ];
 
 const styles = StyleSheet.create({
@@ -76,14 +82,36 @@ const styles = StyleSheet.create({
 });
 
 export default function ListTab() {
-  const { bucketList, userTags } = useDataContext();
-  const [sortBy, setSortBy] = useState<string>(options[0].value);
+  const { bucketList } = useDataContext();
+
+  const router = useRouter();
+
+  const tagList = useMemo(
+    () => [
+      ...new Set(
+        bucketList.items.map(({ tag }) => tag?.toLowerCase()).filter(Boolean)
+      ),
+    ],
+    [bucketList.items]
+  );
+
+  const tagOptions = useMemo(
+    () =>
+      tagList.map((tag) => ({
+        label: tag,
+        value: tag,
+      })),
+    [tagList]
+  );
+
+  const [sortBy, setSortBy] = useState<string>(sortOptions[0].value);
   const [currentLocation, setCurrentLocation] = useState<LocationObject | null>(
     null
   );
-  const [selectedTag, setSelectedTag] = useState<string>("");
 
-  const router = useRouter();
+  const [filterBy, setFilterBy] = useState<
+    "favourite" | "visited" | "unvisited" | (typeof tagList)[number] | undefined
+  >();
 
   const handleEditItem = (i: Item) => {
     router.push({ pathname: "/itemModal", params: { itemId: i.id } });
@@ -102,115 +130,142 @@ export default function ListTab() {
     fetchCurrentLocation();
   }, []);
 
-  const allTags = bucketList.items
-    .map((item) => item.tag?.toLowerCase())
-    .filter(Boolean);
-
-  const uniqueTags = Array.from(new Set(allTags));
-
-  const categorizedItems: { [key: string]: Item[] } = bucketList.items.reduce(
-    (result: { [key: string]: Item[] }, item: Item) => {
-      const tagName = item.tag?.toLowerCase() ?? "uncategorized";
-      // Create a copy of result
-      const updatedResult = { ...result };
-      if (!updatedResult[tagName]) {
-        updatedResult[tagName] = [];
-      }
-      // Modify the copy
-      updatedResult[tagName].push(item);
-      return updatedResult;
-    },
-    {}
-  );
-
-  const tagOptions = uniqueTags.map((tag: string) => ({
-    label: tag,
-    value: tag,
-  }));
-
-  const handleTagSelect = (tag: string | null) => {
-    setSelectedTag(tag);
+  const updateFilterBy = (value: string) => {
+    if (value === filterBy) setFilterBy(undefined);
+    else setFilterBy(value);
   };
 
-  const sortedItems = selectedTag
-    ? categorizedItems[selectedTag]?.slice().sort((a, b) => {
-        switch (sortBy) {
-          case "priority":
-            return (a.priority ?? 0) - (b.priority ?? 0);
-          case "rating":
-            return (b.rating ?? 0) - (a.rating ?? 0);
-          case "distance":
-            if (currentLocation) {
-              const distance1 = getDistanceBetweenPoints(
-                currentLocation.coords,
-                a.coordinates
-              );
-              const distance2 = getDistanceBetweenPoints(
-                currentLocation.coords,
-                b.coordinates
-              );
-              return distance1 - distance2;
-            }
-            return 0;
-          default:
-            return b.createdOn - a.createdOn;
+  const filteredItems = useMemo(() => {
+    const items = bucketList.items.slice();
+
+    if (!filterBy || filterBy === "none") return items;
+
+    switch (filterBy) {
+      case "favourite":
+        return items.filter(({ favourite }) => favourite);
+      case "visited":
+        return items.filter(({ hasVisited }) => hasVisited);
+      case "unvisited":
+        return items.filter(({ hasVisited }) => !hasVisited);
+      default: // Is one of Tags
+        return items.filter(({ tag }) => tag === filterBy);
+    }
+  }, [bucketList.items, filterBy]);
+
+  const sortedItems = filteredItems.sort((a, b) => {
+    switch (sortBy) {
+      case "priority":
+        return (a.priority ?? 0) - (b.priority ?? 0);
+      case "rating":
+        return (b.rating ?? 0) - (a.rating ?? 0);
+      case "distance":
+        if (currentLocation) {
+          const distance1 = getDistanceBetweenPoints(
+            currentLocation.coords,
+            a.coordinates
+          );
+          const distance2 = getDistanceBetweenPoints(
+            currentLocation.coords,
+            b.coordinates
+          );
+          return distance1 - distance2;
         }
-      })
-    : bucketList.items.slice().sort((a, b) => {
-        switch (sortBy) {
-          case "priority":
-            return (a.priority ?? 0) - (b.priority ?? 0);
-          case "rating":
-            return (b.rating ?? 0) - (a.rating ?? 0);
-          case "distance":
-            if (currentLocation) {
-              const distance1 = getDistanceBetweenPoints(
-                currentLocation.coords,
-                a.coordinates
-              );
-              const distance2 = getDistanceBetweenPoints(
-                currentLocation.coords,
-                b.coordinates
-              );
-              return distance1 - distance2;
-            }
-            return 0;
-          default:
-            return b.createdOn - a.createdOn;
-        }
-      });
+        return 0;
+      default:
+        return b.createdOn - a.createdOn;
+    }
+  });
+
+  const tagFilterValue = () => {
+    if (!filterBy) return "none";
+    return tagList.some((t) => t === filterBy) ? filterBy : "none";
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ borderColor: "lightgrey", borderBottomWidth: 0.5 }} />
+
       <View
-        style={{ flexDirection: "row", justifyContent: "center", margin: 10 }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          margin: 10,
+          width: "100%",
+          alignItems: "center",
+        }}
       >
-        <Text style={{ color: "#222" }}>Sort By | </Text>
+        <Text style={{ color: "#222" }}>Sort By | &nbsp; &nbsp;</Text>
+
         <RadioButton
-          options={options}
+          options={sortOptions}
           selectedOption={sortBy}
           onSelect={setSortBy}
         />
       </View>
+
       <View
-        style={{ flexDirection: "row", justifyContent: "center", margin: 10 }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          marginHorizontal: 10,
+          width: "100%",
+          alignItems: "center",
+        }}
       >
-        <Text style={{ color: "#222" }}>Categorize By | </Text>
-        {tagOptions.length > 0 && (
-          <RNPickerSelect
-            onValueChange={handleTagSelect}
-            items={[
-              { label: "Select Tag", value: "" }, // Use an empty string as the value
-              ...tagOptions,
-            ]}
-            value={selectedTag}
-            style={{ inputAndroid: { color: "black" } }}
-          />
-        )}
+        <Text style={{ color: "#222" }}>Filter By | </Text>
+
+        <RNPickerSelect
+          onValueChange={(value) => setFilterBy(value)}
+          items={[
+            { value: "none", label: "Tag" },
+            ...(tagOptions as { label: string; value: string }[]),
+          ]}
+          value={tagFilterValue()}
+          disabled={tagOptions.length === 0}
+          style={{
+            viewContainer: {
+              borderWidth: 0.5,
+              borderColor: tagFilterValue() !== "none" ? "green" : "lightgrey",
+              borderStyle: "dotted",
+              margin: 10,
+              padding: 5,
+              borderRadius: 10,
+            },
+            inputAndroid: {
+              color: tagFilterValue() !== "none" ? "green" : "grey",
+            },
+            inputIOS: { color: tagFilterValue() !== "none" ? "green" : "grey" },
+          }}
+        />
+
+        {filterOptions.map((filter) => (
+          <TouchableOpacity
+            key={filter.value}
+            onPress={() => updateFilterBy(filter.value)}
+            style={{
+              borderWidth: 0.5,
+              borderColor: filter.value === filterBy ? "green" : "lightgrey",
+              margin: 10,
+              padding: 5,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: filter.value === filterBy ? "green" : "grey",
+              }}
+            >
+              {filter.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
+
+      <View style={{ borderColor: "lightgrey", borderBottomWidth: 0.5 }} />
+
       {sortedItems?.length > 0 ? (
         <ScrollView style={styles.container}>
-          {sortedItems.map((item) => (
+          {sortedItems.map((item: Item) => (
             <TouchableOpacity
               key={item.id}
               onPress={() => handleEditItem(item)}
@@ -222,10 +277,18 @@ export default function ListTab() {
       ) : (
         <View style={styles.emptyListView}>
           <Text style={{ color: "grey" }}>
-            Add a new item by pressing the + icon on bottom right
+            No items to show for given filter!
           </Text>
         </View>
       )}
+
+      {bucketList.items.length === 0 ? (
+        <View style={styles.emptyListView}>
+          <Text style={{ color: "grey" }}>
+            Add a new item by pressing the + icon on bottom right
+          </Text>
+        </View>
+      ) : null}
 
       <TouchableOpacity
         style={styles.addButtonContainer}
