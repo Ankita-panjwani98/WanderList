@@ -1,4 +1,5 @@
 import { LocationGeocodedLocation } from "expo-location";
+import Tag from "./Tag";
 
 class Item {
   id: string;
@@ -17,7 +18,7 @@ class Item {
 
   priority?: number;
 
-  tag?: string;
+  tag?: Tag["name"];
 
   favourite?: boolean = false;
 
