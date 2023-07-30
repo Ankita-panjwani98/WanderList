@@ -237,7 +237,9 @@ export default function ListTab() {
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "#222" }}>Filter By | </Text>
+        <Text style={{ color: settings.isDarkModeOn ? "white" : "#222" }}>
+          Filter By |{" "}
+        </Text>
 
         <RNPickerSelect
           onValueChange={(value) => setFilterBy(value)}
@@ -250,16 +252,39 @@ export default function ListTab() {
           style={{
             viewContainer: {
               borderWidth: 0.5,
-              borderColor: tagFilterValue() !== "none" ? "green" : "lightgrey",
+              // eslint-disable-next-line no-nested-ternary
+              borderColor: settings.isDarkModeOn
+                ? tagFilterValue() !== "none"
+                  ? "#e3b836"
+                  : "white"
+                : tagFilterValue() !== "none"
+                ? "green"
+                : "grey",
               borderStyle: "dotted",
               margin: 10,
               padding: 5,
               borderRadius: 10,
             },
             inputAndroid: {
-              color: tagFilterValue() !== "none" ? "green" : "grey",
+              // eslint-disable-next-line no-nested-ternary
+              color: settings.isDarkModeOn
+                ? tagFilterValue() !== "none"
+                  ? "#e3b836"
+                  : "white"
+                : tagFilterValue() !== "none"
+                ? "green"
+                : "grey",
             },
-            inputIOS: { color: tagFilterValue() !== "none" ? "green" : "grey" },
+            inputIOS: {
+              // eslint-disable-next-line no-nested-ternary
+              color: settings.isDarkModeOn
+                ? tagFilterValue() !== "none"
+                  ? "#e3b836"
+                  : "white"
+                : tagFilterValue() !== "none"
+                ? "green"
+                : "grey",
+            },
           }}
         />
 
@@ -269,7 +294,14 @@ export default function ListTab() {
             onPress={() => updateFilterBy(filter.value)}
             style={{
               borderWidth: 0.5,
-              borderColor: filter.value === filterBy ? "green" : "lightgrey",
+              // eslint-disable-next-line no-nested-ternary
+              borderColor: settings.isDarkModeOn
+                ? filter.value === filterBy
+                  ? "#e3b836"
+                  : "white"
+                : filter.value === filterBy
+                ? "green"
+                : "grey",
               margin: 10,
               padding: 5,
               borderRadius: 10,
@@ -277,7 +309,14 @@ export default function ListTab() {
           >
             <Text
               style={{
-                color: filter.value === filterBy ? "green" : "grey",
+                // eslint-disable-next-line no-nested-ternary
+                color: settings.isDarkModeOn
+                  ? filter.value === filterBy
+                    ? "#e3b836"
+                    : "white"
+                  : filter.value === filterBy
+                  ? "green"
+                  : "grey",
               }}
             >
               {filter.label}
