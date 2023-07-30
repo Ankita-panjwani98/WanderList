@@ -1,5 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
+import useDataContext from "../../context/DataContext";
 
 function TabIcon({
   name,
@@ -17,11 +18,6 @@ function TabIcon({
     />
   );
 }
-
-const MapIcon = () => TabIcon({ name: "location-arrow", color: "green" });
-const ListIcon = () => TabIcon({ name: "list-ul", color: "orange" });
-const StatisticsIcon = () => TabIcon({ name: "bar-chart", color: "lightblue" });
-const SettingsIcon = () => TabIcon({ name: "gear", color: "gray" });
 
 // function Header({
 //   href,
@@ -46,8 +42,32 @@ const SettingsIcon = () => TabIcon({ name: "gear", color: "gray" });
 // }
 
 export default function TabLayout() {
+  const { settings } = useDataContext();
+  const MapIcon = () =>
+    TabIcon({
+      name: "location-arrow",
+      color: settings.isDarkModeOn ? "#ace3b8" : "green",
+    });
+  const ListIcon = () => TabIcon({ name: "list-ul", color: "orange" });
+  const StatisticsIcon = () =>
+    TabIcon({ name: "bar-chart", color: "lightblue" });
+  const SettingsIcon = () =>
+    TabIcon({
+      name: "gear",
+      color: settings.isDarkModeOn ? "#ddede0" : "gray",
+    });
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: settings.isDarkModeOn ? "#617287" : "white",
+        },
+        tabBarLabelStyle: {
+          color: settings.isDarkModeOn ? "white" : "grey",
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
