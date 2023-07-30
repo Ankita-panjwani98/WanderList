@@ -202,27 +202,29 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
     setVisitedDistance(String(value));
   };
 
-  // const handleClearList = () => {
-  //   bucketList.items.length
-  //     ? Alert.alert(
-  //         "Clear List",
-  //         "Are you sure you want to remove all items from the list? This process is irreversible!",
-  //         [
-  //           {
-  //             text: "No",
-  //             style: "cancel",
-  //           },
-  //           {
-  //             text: "Yes",
-  //             style: "destructive",
-  //             onPress: () => {
-  //               setBucketList(new BucketList([]));
-  //             },
-  //           },
-  //         ]
-  //       )
-  //     : Alert.alert("No items to clear!!");
-  // };
+  const handleClearList = () => {
+    if (bucketList.items.length) {
+      Alert.alert(
+        "Clear List",
+        "Are you sure you want to remove all items from the list? This process is irreversible!",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            style: "destructive",
+            onPress: () => {
+              setBucketList(new BucketList([]));
+            },
+          },
+        ]
+      );
+    } else {
+      Alert.alert("No items to clear!!");
+    }
+  };
 
   return (
     <>
