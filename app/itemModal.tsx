@@ -29,9 +29,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
+  containerDark: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    backgroundColor: "#3c5063",
+  },
   input: {
     borderBottomWidth: 1,
     borderColor: "lightgray",
+    color: "lightgray",
+    padding: 10,
+    width: "80%",
+    marginBottom: 10,
+  },
+  inputDark: {
+    borderBottomWidth: 1,
+    borderColor: "lightgray",
+    color: "white",
+    padding: 10,
+    width: "80%",
+    marginBottom: 10,
+  },
+  autoInput: {
+    borderBottomWidth: 1,
+    borderColor: "lightgray",
+    color: "black",
     padding: 10,
     width: "80%",
     marginBottom: 10,
@@ -47,8 +70,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: "center",
   },
+  buttonContainerDark: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 10,
+    alignItems: "center",
+    backgroundColor: "#3c5063",
+  },
   deleteButton: {
     marginHorizontal: 10,
+    marginTop: 20,
   },
   bottomButtonContainer: {
     flexDirection: "row",
@@ -85,7 +116,7 @@ const styles = StyleSheet.create({
 export default function ItemModal() {
   const router = useRouter();
 
-  const { bucketList, setBucketList } = useDataContext();
+  const { bucketList, setBucketList, settings } = useDataContext();
   const { itemId } = useLocalSearchParams();
   const item = bucketList.items.find((i) => i.id === itemId);
 
@@ -193,7 +224,13 @@ export default function ItemModal() {
 
   return (
     <>
-      <View style={styles.buttonContainer}>
+      <View
+        style={
+          settings.isDarkModeOn
+            ? styles.buttonContainerDark
+            : styles.buttonContainer
+        }
+      >
         {item ? (
           <TouchableOpacity
             style={styles.deleteButton}
@@ -221,12 +258,15 @@ export default function ItemModal() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
+      <View
+        style={settings.isDarkModeOn ? styles.containerDark : styles.container}
+      >
         <TextInput
-          style={styles.input}
+          style={settings.isDarkModeOn ? styles.inputDark : styles.input}
           value={title}
           onChangeText={setTitle}
           placeholder="Title"
+          placeholderTextColor={settings.isDarkModeOn ? "white" : "lightgray"}
         />
 
         <TextInput
@@ -234,6 +274,7 @@ export default function ItemModal() {
           value={description}
           onChangeText={setDescription}
           placeholder="Description"
+          placeholderTextColor={settings.isDarkModeOn ? "white" : "lightgray"}
         />
 
         <GooglePlacesAutocomplete
@@ -262,7 +303,7 @@ export default function ItemModal() {
               width: "80%",
               flex: 0,
             },
-            textInput: styles.input,
+            textInput: styles.autoInput,
           }}
           suppressDefaultStyles={false}
           enablePoweredByContainer={false}
@@ -287,7 +328,9 @@ export default function ItemModal() {
         />
 
         <View style={styles.switchContainer}>
-          <Text>Visited?</Text>
+          <Text style={{ color: settings.isDarkModeOn ? "white" : "black" }}>
+            Visited?
+          </Text>
           <TouchableOpacity
             style={styles.deleteButton}
             onPress={() => setHasVisited(!hasVisited)}

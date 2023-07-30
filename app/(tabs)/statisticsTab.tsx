@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#918e8e",
   },
+  progressLabelDark: {
+    marginTop: 5,
+    color: "#ebe8e1",
+  },
   statisticsContainer: {
     marginTop: "10%",
     marginBottom: "10%",
@@ -52,10 +56,35 @@ const styles = StyleSheet.create({
       },
     }),
   },
+
+  statisticsContainerDarkMode: {
+    marginTop: "10%",
+    marginBottom: "10%",
+    backgroundColor: "#617287",
+    padding: 10,
+    borderRadius: 10,
+    height: "auto",
+    ...Platform.select({
+      ios: {
+        shadowColor: "black",
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
   totalPlaces: {
     fontSize: 20,
     fontWeight: "600",
     color: "#327063",
+  },
+  totalPlacesDark: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#ebe8e1",
   },
   totalPlacesContainer: {
     borderRadius: 5,
@@ -79,7 +108,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 25,
-    backgroundColor: "#FFC26E",
+    backgroundColor: "#fad198",
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 10,
@@ -108,12 +137,22 @@ const styles = StyleSheet.create({
   visitedText: {
     fontSize: 17,
     fontWeight: "600",
-    color: "#327063",
+    color: "#ebeef2",
+  },
+  visitedTextDark: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#ebe8e1",
   },
   unvisitedText: {
     fontSize: 17,
     fontWeight: "600",
     color: "#327063",
+  },
+  unvisitedTextDark: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#ebe8e1",
   },
   textcontainer: {
     display: "flex",
@@ -127,6 +166,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#327063",
   },
+  totalDistanceTextDark: {
+    marginTop: "18%",
+    fontSize: 16,
+    color: "#ebe8e1",
+  },
   totalDistanceNumber: {
     marginTop: "18%",
     fontSize: 16,
@@ -134,10 +178,17 @@ const styles = StyleSheet.create({
     color: "#7a7676",
     fontWeight: "700",
   },
+  totalDistanceNumberDark: {
+    marginTop: "18%",
+    fontSize: 16,
+    paddingLeft: 10,
+    color: "#ba8f29",
+    fontWeight: "700",
+  },
 });
 
 export default function StatisticsTab() {
-  const { bucketList } = useDataContext();
+  const { bucketList, settings } = useDataContext();
   const router = useRouter();
 
   const totalPlaces = bucketList.items.length;
@@ -171,11 +222,16 @@ export default function StatisticsTab() {
     totalPlaces === 0 ? 0 : (favouriteCount / totalPlaces) * 100;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#f2f5f4",
+      }}
+    >
       {bucketList.items.length > 0 ? (
         <ScrollView style={styles.container}>
           <TouchableOpacity
-            onPress={() => router.push("settingsHelpModal")}
+            onPress={() => router.push("statisticsHelpModal")}
             style={{
               position: "absolute",
               right: 20,
@@ -188,10 +244,24 @@ export default function StatisticsTab() {
             <Image source={GraphImage} style={{ width: 220, height: 220 }} />
           </View>
 
-          <View style={styles.statisticsContainer}>
+          <View
+            style={
+              settings.isDarkModeOn
+                ? styles.statisticsContainerDarkMode
+                : styles.statisticsContainer
+            }
+          >
             <View style={styles.totalPlacesContainer}>
               <View>
-                <Text style={styles.totalPlaces}>Saved Places:</Text>
+                <Text
+                  style={
+                    settings.isDarkModeOn
+                      ? styles.totalPlacesDark
+                      : styles.totalPlaces
+                  }
+                >
+                  Saved Places:
+                </Text>
               </View>
 
               <View style={styles.numbercontainer}>
@@ -205,7 +275,15 @@ export default function StatisticsTab() {
               <View style={styles.visitedPlacesContainer}>
                 <View style={styles.textcontainer}>
                   <View>
-                    <Text style={styles.unvisitedText}>Places visited:</Text>
+                    <Text
+                      style={
+                        settings.isDarkModeOn
+                          ? styles.unvisitedTextDark
+                          : styles.unvisitedText
+                      }
+                    >
+                      Places visited:
+                    </Text>
                   </View>
                   <View style={styles.countContainer}>
                     <Text style={styles.number}>{visitedCount}</Text>
@@ -221,14 +299,26 @@ export default function StatisticsTab() {
                   color="#45c449"
                 />
 
-                <Text style={styles.progressLabel}>
+                <Text
+                  style={
+                    settings.isDarkModeOn
+                      ? styles.progressLabelDark
+                      : styles.progressLabel
+                  }
+                >
                   {`${Math.round(visitedPercentage)}% visited`}
                 </Text>
               </View>
               <View style={styles.unvisitedPlacesContainer}>
                 <View style={styles.textcontainer}>
                   <View>
-                    <Text style={styles.unvisitedText}>
+                    <Text
+                      style={
+                        settings.isDarkModeOn
+                          ? styles.unvisitedTextDark
+                          : styles.unvisitedText
+                      }
+                    >
                       Places not visited:
                     </Text>
                   </View>
@@ -246,7 +336,13 @@ export default function StatisticsTab() {
                   color="#cf6146"
                 />
 
-                <Text style={styles.progressLabel}>
+                <Text
+                  style={
+                    settings.isDarkModeOn
+                      ? styles.progressLabelDark
+                      : styles.progressLabel
+                  }
+                >
                   {`${Math.round(unvisitedPercentage)}% unvisited`}
                 </Text>
               </View>
@@ -254,7 +350,15 @@ export default function StatisticsTab() {
               <View style={styles.unvisitedPlacesContainer}>
                 <View style={styles.textcontainer}>
                   <View>
-                    <Text style={styles.unvisitedText}>Favourite places:</Text>
+                    <Text
+                      style={
+                        settings.isDarkModeOn
+                          ? styles.unvisitedTextDark
+                          : styles.unvisitedText
+                      }
+                    >
+                      Favourite places:
+                    </Text>
                   </View>
                   <View style={styles.countContainer}>
                     <Text style={styles.number}>{favouriteCount}</Text>
@@ -270,16 +374,34 @@ export default function StatisticsTab() {
                   color="#f2c477"
                 />
 
-                <Text style={styles.progressLabel}>
+                <Text
+                  style={
+                    settings.isDarkModeOn
+                      ? styles.progressLabelDark
+                      : styles.progressLabel
+                  }
+                >
                   {`${Math.round(favouritePercentage)}% favourite`}
                 </Text>
               </View>
             </View>
             <View style={styles.totalPlacesContainer}>
-              <Text style={styles.totalDistanceText}>
+              <Text
+                style={
+                  settings.isDarkModeOn
+                    ? styles.totalDistanceTextDark
+                    : styles.totalDistanceText
+                }
+              >
                 Distance Traveled: 🚀
               </Text>
-              <Text style={styles.totalDistanceNumber}>
+              <Text
+                style={
+                  settings.isDarkModeOn
+                    ? styles.totalDistanceNumberDark
+                    : styles.totalDistanceNumber
+                }
+              >
                 {totalDisplacement.toFixed(2)} kms
               </Text>
             </View>
@@ -287,7 +409,7 @@ export default function StatisticsTab() {
         </ScrollView>
       ) : (
         <View style={styles.emptyListView}>
-          <Text style={{ color: "grey" }}>
+          <Text style={{ color: settings.isDarkModeOn ? "white" : "grey" }}>
             Add any new place to see the statistics.
           </Text>
         </View>
