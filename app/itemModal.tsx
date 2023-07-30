@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   StyleSheet,
@@ -19,6 +19,9 @@ import Item from "../DB/Item";
 import CustomRating from "../components/CustomRating";
 import { IconGreen, IconGrey } from "../components/Media";
 import generateUUID from "../utils/generateUUID";
+import TagAutocomplete from "../components/TagAutocomplete";
+import Tag from "../DB/Tag";
+import TagsList from "../DB/TagsList";
 
 const styles = StyleSheet.create({
   container: {
@@ -129,6 +132,19 @@ export default function ItemModal() {
   const [priority, setPriority] = useState(item?.priority ?? 0);
   const [favourite, setFavourite] = useState(item?.favourite || false);
 
+  const [tag, setTag] = useState<string>(item?.tag ?? "");
+  const [listTag, setListTag] = useState<Tag[]>([]); // List of tags for the autocomplete
+
+  useEffect(() => {
+    const uniqueTags = Array.from(
+      new Set(bucketList.items.map((i) => i.tag).filter((t) => !!t))
+    );
+    const updatedListTag = uniqueTags
+      .filter((name) => typeof name === "string")
+      .map((name) => new Tag({ id: generateUUID(), name: name! }));
+    setListTag(updatedListTag);
+  }, [bucketList.items]);
+
   const handleSave = () => {
     setError("");
 
@@ -142,6 +158,12 @@ export default function ItemModal() {
       return;
     }
 
+    const foundTag = listTag.find((t) => t.name === tag);
+    if (tag && !foundTag) {
+      const newTag = new Tag({ id: generateUUID(), name: tag });
+      setListTag([...listTag, newTag]);
+    }
+
     const newItem = {
       id: item?.id ?? generateUUID(),
       createdOn: item?.createdOn ?? Date.now(),
@@ -153,6 +175,7 @@ export default function ItemModal() {
       rating,
       priority,
       favourite,
+      tag,
       updatedOn: Date.now(),
     };
 
@@ -325,6 +348,13 @@ export default function ItemModal() {
             )}
           </TouchableOpacity>
         </View>
+
+        <TagAutocomplete
+          listTag={listTag}
+          bucketListItems={bucketList.items}
+          selectedTag={tag}
+          onTagsChange={setTag}
+        />
 
         <View style={styles.bottomButtonContainer}>
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
