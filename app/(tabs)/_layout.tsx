@@ -1,6 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { Tabs } from "expo-router";
 
 function TabIcon({
   name,
@@ -24,27 +23,27 @@ const ListIcon = () => TabIcon({ name: "list-ul", color: "orange" });
 const StatisticsIcon = () => TabIcon({ name: "bar-chart", color: "lightblue" });
 const SettingsIcon = () => TabIcon({ name: "gear", color: "gray" });
 
-function Header({
-  href,
-  icon,
-}: {
-  href: string;
-  icon: keyof typeof FontAwesome.glyphMap;
-}) {
-  return (
-    <Link href={href} asChild>
-      <Pressable>
-        {({ pressed }) => (
-          <FontAwesome
-            name={icon}
-            size={25}
-            style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          />
-        )}
-      </Pressable>
-    </Link>
-  );
-}
+// function Header({
+//   href,
+//   icon,
+// }: {
+//   href: string;
+//   icon: keyof typeof FontAwesome.glyphMap;
+// }) {
+//   return (
+//     <Link href={href} asChild>
+//       <Pressable>
+//         {({ pressed }) => (
+//           <FontAwesome
+//             name={icon}
+//             size={25}
+//             style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+//           />
+//         )}
+//       </Pressable>
+//     </Link>
+//   );
+// }
 
 export default function TabLayout() {
   return (
@@ -79,8 +78,7 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           tabBarIcon: SettingsIcon,
-          headerRight: () =>
-            Header({ href: "/settingsHelpModal", icon: "question-circle" }),
+          headerShown: false,
         }}
       />
     </Tabs>

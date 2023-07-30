@@ -1,5 +1,5 @@
 import { StyleSheet, View, Alert } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { MapStyleElement, PROVIDER_GOOGLE } from "react-native-maps";
 import { useEffect, useRef } from "react";
 import ItemMarker from "../../components/Marker";
 import useDataContext from "../../context/DataContext";
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+    // background: "blue",
   },
   errorText: {
     textAlign: "center",
@@ -44,6 +45,44 @@ export default function MapTab() {
   const { bucketList, setBucketList, settings } = useDataContext();
   const mapRef = useRef<MapView | null>(null);
   const visitedTimer = useRef<NodeJS.Timeout>();
+
+  const darkModeCustomMapStyle = [
+    {
+      elementType: "geometry",
+      stylers: [
+        {
+          color: "#3c5063",
+        },
+      ],
+    },
+    {
+      elementType: "labels.text.fill",
+      stylers: [
+        {
+          color: "#f2eded",
+        },
+      ],
+    },
+    {
+      elementType: "labels.text.stroke",
+      stylers: [
+        {
+          color: "#3c5063",
+        },
+      ],
+    },
+    {
+      featureType: "administrative",
+      elementType: "geometry.stroke",
+      stylers: [
+        {
+          color: "#f2eded",
+        },
+      ],
+    },
+  ];
+
+  const lightModeStyle: MapStyleElement[] | undefined = [];
 
   // Request permission if not granted for first time when app opened
   // Show alert if denied
@@ -123,6 +162,9 @@ export default function MapTab() {
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
+        customMapStyle={
+          settings.isDarkModeOn ? darkModeCustomMapStyle : lightModeStyle
+        }
         initialRegion={DEFAULT_REGION_LONDON}
         showsIndoors={false}
         ref={(r) => {

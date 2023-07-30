@@ -1,4 +1,5 @@
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,6 +25,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#333",
   },
+  radioLabelDark: {
+    fontSize: 12,
+    color: "white",
+  },
 });
 
 type Option = {
@@ -42,6 +47,8 @@ export default function RadioButton({
   selectedOption,
   onSelect,
 }: RadioButtonProps) {
+  const { settings } = useDataContext();
+
   return (
     <View style={styles.container}>
       {options.map((option) => (
@@ -56,7 +63,13 @@ export default function RadioButton({
               option.value === selectedOption && styles.radioIndicatorSelected,
             ]}
           />
-          <Text style={styles.radioLabel}>{option.label}</Text>
+          <Text
+            style={
+              settings.isDarkModeOn ? styles.radioLabelDark : styles.radioLabel
+            }
+          >
+            {option.label}
+          </Text>
         </TouchableOpacity>
       ))}
     </View>
