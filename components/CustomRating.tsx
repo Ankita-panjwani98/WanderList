@@ -1,5 +1,6 @@
 import { View, Text } from "react-native";
 import { Rating } from "react-native-ratings";
+import useDataContext from "../context/DataContext";
 
 type CustomRatingProps = {
   label: string;
@@ -18,6 +19,8 @@ function CustomRating({
   imageSize = 25,
   handleRatingChange,
 }: CustomRatingProps) {
+  const { settings } = useDataContext();
+
   return (
     <View
       style={{
@@ -27,7 +30,9 @@ function CustomRating({
         justifyContent: "flex-start",
       }}
     >
-      <Text>{label}</Text>
+      <Text style={{ color: settings.isDarkModeOn ? "white" : "black" }}>
+        {label}
+      </Text>
       <Rating
         minValue={0}
         fractions={0}
@@ -35,7 +40,7 @@ function CustomRating({
         onFinishRating={handleRatingChange}
         imageSize={imageSize}
         type={type}
-        tintColor="#f2f2f2"
+        tintColor={settings.isDarkModeOn ? "#3c5063" : "#f2f2f2"}
         ratingCount={ratingCount}
       />
     </View>

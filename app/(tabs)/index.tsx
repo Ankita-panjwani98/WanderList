@@ -30,9 +30,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   emptyListView: {
+    paddingTop: "20%",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f2f3f5",
+  },
+  emptyListViewDarkMode: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#3c5063",
   },
   addButtonContainer: {
     position: "absolute",
@@ -46,10 +54,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 4,
   },
+  addButtonContainerDarkMode: {
+    position: "absolute",
+    bottom: 16,
+    right: 16,
+    backgroundColor: "#e3b836",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
+  },
 });
 
 export default function ListTab() {
-  const { bucketList } = useDataContext();
+  const { bucketList, settings } = useDataContext();
   const [sortBy, setSortBy] = useState<string>(options[0].value);
   const [currentLocation, setCurrentLocation] = useState<LocationObject | null>(
     null
@@ -100,7 +120,12 @@ export default function ListTab() {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#f2f3f5",
+      }}
+    >
       {bucketList.items.length > 0 ? (
         <ScrollView style={styles.container}>
           <View
@@ -113,7 +138,9 @@ export default function ListTab() {
               paddingBottom: 10,
             }}
           >
-            <Text style={{ color: "#222" }}>Sort By | </Text>
+            <Text style={{ color: settings.isDarkModeOn ? "white" : "#222" }}>
+              Sort By |{" "}
+            </Text>
             <RadioButton
               options={options}
               selectedOption={sortBy}
@@ -130,15 +157,25 @@ export default function ListTab() {
           ))}
         </ScrollView>
       ) : (
-        <View style={styles.emptyListView}>
-          <Text style={{ color: "grey" }}>
+        <View
+          style={
+            settings.isDarkModeOn
+              ? styles.emptyListViewDarkMode
+              : styles.emptyListView
+          }
+        >
+          <Text style={{ color: settings.isDarkModeOn ? "white" : "grey" }}>
             Add a new item by pressing the + icon on bottom right
           </Text>
         </View>
       )}
 
       <TouchableOpacity
-        style={styles.addButtonContainer}
+        style={
+          settings.isDarkModeOn
+            ? styles.addButtonContainerDarkMode
+            : styles.addButtonContainer
+        }
         onPress={handleAddItem}
       >
         <AntDesign name="plus" size={24} color="white" />
