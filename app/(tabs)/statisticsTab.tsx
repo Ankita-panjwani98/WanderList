@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginTop: "18%",
     fontSize: 16,
     paddingLeft: 10,
-    color: "#ba8f29",
+    color: "#deae3c",
     fontWeight: "700",
     fontFamily: "Montserrat",
   },
