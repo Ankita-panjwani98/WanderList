@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   statisticsContainer: {
     marginTop: "10%",
     marginBottom: "10%",
-    backgroundColor: "#f2f5f4",
+    backgroundColor: "#f2f2f2",
     padding: 10,
     borderRadius: 10,
     height: "auto",
@@ -77,14 +77,16 @@ const styles = StyleSheet.create({
     }),
   },
   totalPlaces: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "600",
     color: "#327063",
+    fontFamily: "Montserrat",
   },
   totalPlacesDark: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "600",
     color: "#ebe8e1",
+    fontFamily: "Montserrat",
   },
   totalPlacesContainer: {
     borderRadius: 5,
@@ -96,14 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  divider: {
-    borderBottomColor: "grey",
-    borderBottomWidth: 1,
-    width: "80%",
-    marginBottom: "2%",
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
+
   numbercontainer: {
     width: 30,
     height: 30,
@@ -124,6 +119,7 @@ const styles = StyleSheet.create({
   },
   number: {
     color: "darkblue",
+    fontFamily: "Montserrat",
     fontSize: 16,
   },
   visitedPlacesContainer: {
@@ -138,11 +134,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
     color: "#ebeef2",
+    fontFamily: "Montserrat",
   },
   visitedTextDark: {
     fontSize: 17,
     fontWeight: "600",
     color: "#ebe8e1",
+    fontFamily: "Montserrat",
   },
   unvisitedText: {
     fontSize: 17,
@@ -153,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
     color: "#ebe8e1",
+    fontFamily: "Montserrat",
   },
   textcontainer: {
     display: "flex",
@@ -165,11 +164,13 @@ const styles = StyleSheet.create({
     marginTop: "18%",
     fontSize: 16,
     color: "#327063",
+    fontFamily: "Montserrat",
   },
   totalDistanceTextDark: {
     marginTop: "18%",
     fontSize: 16,
     color: "#ebe8e1",
+    fontFamily: "Montserrat",
   },
   totalDistanceNumber: {
     marginTop: "18%",
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#7a7676",
     fontWeight: "700",
+    fontFamily: "Montserrat",
   },
   totalDistanceNumberDark: {
     marginTop: "18%",
@@ -184,6 +186,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#ba8f29",
     fontWeight: "700",
+    fontFamily: "Montserrat",
   },
 });
 
@@ -268,9 +271,17 @@ export default function StatisticsTab() {
                 <Text style={styles.number}>{totalPlaces}</Text>
               </View>
             </View>
-
-            <View style={styles.divider} />
-
+            <View>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: -20,
+                  color: settings.isDarkModeOn ? "white" : "darkgrey",
+                }}
+              >
+                ______________________________
+              </Text>
+            </View>
             <View style={styles.progressContainer}>
               <View style={styles.visitedPlacesContainer}>
                 <View style={styles.textcontainer}>

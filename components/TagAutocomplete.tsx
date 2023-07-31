@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   View,
   TextInput,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   Text,
 } from "react-native";
@@ -29,6 +28,13 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "70%",
     marginBottom: 10,
+  },
+  inputDark: {
+    borderBottomWidth: 1,
+    borderColor: "white",
+    padding: 10,
+    color: "white",
+    width: "100%",
   },
   suggestionItem: {
     borderColor: "lightgray",
@@ -69,7 +75,7 @@ function TagAutocomplete({
   onTagsChange: (tagName: string) => void;
 }) {
   const { settings } = useDataContext();
-
+  
   const [inputValue, setInputValue] = useState(selectedTag);
   const [filteredTagsByInput, setFilteredTagsByInput] = useState<Tag[]>([]);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
