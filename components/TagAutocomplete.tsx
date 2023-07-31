@@ -8,9 +8,9 @@ import {
   Text,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import useDataContext from "../context/DataContext";
 import Item from "../DB/Item";
 import Tag from "../DB/Tag";
-import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     borderColor: "lightgray",
-    // color: "black",
     padding: 10,
     width: "70%",
     marginBottom: 10,
