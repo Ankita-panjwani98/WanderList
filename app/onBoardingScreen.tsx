@@ -6,7 +6,6 @@ import WishlistImage from "../assets/images/1.png";
 import ManageListImage from "../assets/images/2.png";
 import VisualizeMapImage from "../assets/images/3.png";
 
-
 function Done({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={onPress}>
@@ -33,10 +32,17 @@ export default function OnBoardingScreen() {
       onSkip={handleSkip}
       titleStyles={{
         marginTop: -100,
-        fontFamily: "Firacode",
+        fontFamily: "Calibri",
         fontWeight: "bold",
+        padding: 10,
       }}
-      subTitleStyles={{ marginTop: -8, fontFamily: "SpaceMono", fontSize: 17 }}
+      subTitleStyles={{
+        marginTop: -30,
+        lineHeight: 30,
+        width: 350,
+        fontFamily: "Montserrat",
+        fontSize: 17,
+      }}
       pages={[
         {
           backgroundColor: "#dce4f5",

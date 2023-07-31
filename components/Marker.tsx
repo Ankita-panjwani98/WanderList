@@ -10,7 +10,7 @@ export default function ItemMarker({ item }: { item: Item }) {
       coordinate={item.coordinates}
       pinColor="green"
       title={item.title}
-      description={item.address}
+      description={item.description}
     >
       <Image source={getIconForItem(item)} style={{ height: 40, width: 40 }} />
     </Marker>

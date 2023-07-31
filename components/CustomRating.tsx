@@ -27,10 +27,12 @@ function CustomRating({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
+        width: 300,
+        marginTop: 20,
       }}
     >
-      <Text style={{ color: settings.isDarkModeOn ? "white" : "black" }}>
+      <Text style={{ color: settings.isDarkModeOn ? "white" : "#3c5063" }}>
         {label}
       </Text>
       <Rating

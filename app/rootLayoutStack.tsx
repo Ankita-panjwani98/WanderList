@@ -14,7 +14,7 @@ export default function RootLayoutStack() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="itemModal"
-        options={{ headerTitle: "Item Details", presentation: "modal" }}
+        options={{ headerShown: false, presentation: "modal" }}
       />
       <Stack.Screen
         name="statisticsHelpModal"
