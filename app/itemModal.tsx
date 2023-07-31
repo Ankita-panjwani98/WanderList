@@ -21,24 +21,27 @@ import { IconGreen, IconGrey } from "../components/Media";
 import generateUUID from "../utils/generateUUID";
 import TagAutocomplete from "../components/TagAutocomplete";
 import Tag from "../DB/Tag";
-import TagsList from "../DB/TagsList";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
+    height: 300,
+    marginTop: 40,
   },
   containerDark: {
-    flex: 1,
+    display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
+    height: 300,
     backgroundColor: "#3c5063",
+    marginTop: 40,
   },
   input: {
     borderBottomWidth: 1,
     borderColor: "lightgray",
-    color: "lightgray",
+    color: "#5a5a5a",
     padding: 10,
     width: "80%",
     marginBottom: 10,
@@ -60,9 +63,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   switchContainer: {
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 10,
+    width: 300,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -83,7 +89,7 @@ const styles = StyleSheet.create({
   },
   bottomButtonContainer: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 50,
     width: "80%",
   },
   buttonText: {
@@ -107,9 +113,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorView: {
-    color: "red",
     maxWidth: "80%",
     padding: 10,
+  },
+  ratings: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  ratingsDark: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#3c5063",
   },
 });
 
@@ -223,7 +239,12 @@ export default function ItemModal() {
   };
 
   return (
-    <>
+    <View
+      style={{
+        backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#f2f2f2",
+        height: 900,
+      }}
+    >
       <View
         style={
           settings.isDarkModeOn
@@ -256,6 +277,32 @@ export default function ItemModal() {
             color={favourite ? "orange" : "lightgray"}
           />
         </TouchableOpacity>
+      </View>
+
+      <View
+        style={{
+          backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#F2F2F2",
+        }}
+      >
+        <Text
+          style={{
+            marginTop: 30,
+            textAlign: "center",
+            fontSize: 18,
+            fontFamily: "Montserrat",
+            color: settings.isDarkModeOn ? "white" : "#3c5063",
+          }}
+        >
+          Add Item
+        </Text>
+        <Text
+          style={{
+            textAlign: "center",
+            color: settings.isDarkModeOn ? "white" : "#3c5063",
+          }}
+        >
+          __________________________
+        </Text>
       </View>
 
       <View
@@ -312,24 +359,31 @@ export default function ItemModal() {
           disableScroll
           fetchDetails
         />
-
+        <TagAutocomplete
+          listTag={listTag}
+          bucketListItems={bucketList.items}
+          selectedTag={tag}
+          onTagsChange={setTag}
+        />
+      </View>
+      <View style={settings.isDarkModeOn ? styles.ratingsDark : styles.ratings}>
         <CustomRating
           type="bell"
           handleRatingChange={(p) => setPriority(p)}
-          label="Priority: "
+          label="Priority:"
           ratingCount={3}
         />
 
         <CustomRating
           type="heart"
           handleRatingChange={(r) => setRating(r)}
-          label="Rating: "
+          label="Rating:"
           ratingCount={5}
         />
 
         <View style={styles.switchContainer}>
-          <Text style={{ color: settings.isDarkModeOn ? "white" : "black" }}>
-            Visited?
+          <Text style={{ color: settings.isDarkModeOn ? "white" : "#3c5063" }}>
+            Visited:
           </Text>
           <TouchableOpacity
             style={styles.deleteButton}
@@ -349,13 +403,6 @@ export default function ItemModal() {
           </TouchableOpacity>
         </View>
 
-        <TagAutocomplete
-          listTag={listTag}
-          bucketListItems={bucketList.items}
-          selectedTag={tag}
-          onTagsChange={setTag}
-        />
-
         <View style={styles.bottomButtonContainer}>
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.buttonText}>Cancel</Text>
@@ -366,9 +413,11 @@ export default function ItemModal() {
         </View>
 
         <View style={styles.errorView}>
-          <Text style={{ color: "red" }}>{error}</Text>
+          <Text style={{ color: settings.isDarkModeOn ? "#f0857f" : "red" }}>
+            {error}
+          </Text>
         </View>
       </View>
-    </>
+    </View>
   );
 }

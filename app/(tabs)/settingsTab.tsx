@@ -21,13 +21,13 @@ const styles = StyleSheet.create({
   container: {
     marginTop: "15%",
     marginBottom: "10%",
-    backgroundColor: "#e9edf2",
+    backgroundColor: "#f2f2f2",
     padding: 5,
     marginLeft: 15,
     marginRight: 15,
-    paddingTop: 80,
+    paddingTop: 40,
     borderRadius: 10,
-    height: 600,
+    height: 400,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     padding: 5,
     marginLeft: 15,
     marginRight: 15,
-    paddingTop: 80,
+    paddingTop: 40,
     borderRadius: 10,
-    height: 600,
+    height: 400,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "black",
     width: 100,
-    fontFamily: "Firacode",
+    fontFamily: "Montserrat",
   },
   inputDarkMode: {
     borderBottomWidth: 0.5,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     width: 100,
-    fontFamily: "Firacode",
+    fontFamily: "Montserrat",
   },
   errorText: {
     fontSize: 12,
@@ -248,26 +248,46 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
 
       <View
         style={{
-          backgroundColor: settings.isDarkModeOn ? "#3c5063" : "white",
+          backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#f2f2f2",
           height: 900,
         }}
       >
+        <View style={{ alignItems: "center", marginTop: 130 }}>
+          <Image
+            source={SettingsImage}
+            style={{ width: 250, height: 140, marginBottom: 10 }}
+          />
+        </View>
         <View
           style={
             settings.isDarkModeOn ? styles.containerDarkMode : styles.container
           }
         >
-          <View style={{ alignItems: "center" }}>
-            <Image
-              source={SettingsImage}
-              style={{ width: 250, height: 140, marginBottom: 50 }}
-            />
+          <View style={{ marginBottom: 50 }}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontFamily: "Montserrat",
+                fontSize: 18,
+                color: settings.isDarkModeOn ? "white" : "#615d5d",
+              }}
+            >
+              Manage your settings
+            </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                color: settings.isDarkModeOn ? "white" : "#615d5d",
+              }}
+            >
+              ________________________________
+            </Text>
           </View>
           <View style={styles.row}>
             <Text
               style={{
                 color: settings.isDarkModeOn ? "white" : "black",
-                fontFamily: "Firacode",
+                fontFamily: "Montserrat",
                 fontSize: 16,
                 width: 200,
               }}
@@ -289,7 +309,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
             <Text
               style={{
                 color: settings.isDarkModeOn ? "white" : "black",
-                fontFamily: "Firacode",
+                fontFamily: "Montserrat",
                 fontSize: 16,
                 width: 200,
               }}
@@ -308,6 +328,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
                 <Text
                   style={{
                     color: !bucketList.items.length ? "black" : "white",
+                    fontFamily: "Montserrat",
                   }}
                 >
                   Clear List
@@ -320,7 +341,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
             <Text
               style={{
                 color: settings.isDarkModeOn ? "white" : "black",
-                fontFamily: "Firacode",
+                fontFamily: "Montserrat",
                 fontSize: 16,
                 width: 200,
               }}

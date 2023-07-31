@@ -4,6 +4,8 @@ import { SplashScreen } from "expo-router";
 import SpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
 import Manrope from "../assets/fonts/Manrope-VariableFont_wght.ttf";
 import Firacode from "../assets/fonts/FiraCode-VariableFont_wght.ttf";
+import Calibri from "../assets/fonts/CALIBRI.ttf";
+import Montserrat from "../assets/fonts/Montserrat-Regular.ttf";
 import { DataProvider } from "../context/DataContext";
 import RootLayoutStack from "./rootLayoutStack";
 
@@ -18,6 +20,8 @@ export default function RootLayout() {
     SpaceMono,
     Firacode,
     Manrope,
+    Montserrat,
+    Calibri,
     ...FontAwesome.font,
   });
   if (!loadedFonts) return <SplashScreen />;
