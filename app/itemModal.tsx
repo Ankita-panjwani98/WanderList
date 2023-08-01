@@ -12,7 +12,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { LocationGeocodedLocation } from "expo-location";
 import { FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import Constants from "expo-constants";
 import useDataContext from "../context/DataContext";
 import BucketList from "../DB/BucketList";
 import Item from "../DB/Item";
@@ -23,6 +22,9 @@ import TagAutocomplete from "../components/TagAutocomplete";
 import Tag from "../DB/Tag";
 
 const styles = StyleSheet.create({
+  keyboard: {
+    flex: 1,
+  },
   container: {
     display: "flex",
     alignItems: "center",
@@ -340,7 +342,7 @@ export default function ItemModal() {
             setAddress(details.formatted_address);
           }}
           query={{
-            key: Constants.expoConfig?.android?.config?.googleMaps?.apiKey,
+            key: "AIzaSyCWDApxY413T92k40jFXYWmQAd91FiMPq4",
             language: "en",
           }}
           styles={{
@@ -359,6 +361,7 @@ export default function ItemModal() {
           disableScroll
           fetchDetails
         />
+
         <TagAutocomplete
           listTag={listTag}
           bucketListItems={bucketList.items}
