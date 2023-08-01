@@ -68,7 +68,11 @@ export default function StatisticsHelpModal() {
             textAlign: "left",
           }}
         >
-          <AntDesign name="caretleft" size={24} color="white" />
+          <AntDesign
+            name="caretleft"
+            size={24}
+            color={settings.isDarkModeOn ? "white" : "#666262"}
+          />
         </Text>
       </TouchableOpacity>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

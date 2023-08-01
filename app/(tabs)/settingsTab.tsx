@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingTop: 40,
     borderRadius: 10,
-    height: 400,
+    height: 430,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingTop: 40,
     borderRadius: 10,
-    height: 400,
+    height: 430,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -252,7 +252,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
           height: 900,
         }}
       >
-        <View style={{ alignItems: "center", marginTop: 130 }}>
+        <View style={{ alignItems: "center", marginTop: 80 }}>
           <Image
             source={SettingsImage}
             style={{ width: 250, height: 140, marginBottom: 10 }}
