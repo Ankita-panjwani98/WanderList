@@ -32,19 +32,29 @@ function CustomRating({
         marginTop: 20,
       }}
     >
-      <Text style={{ color: settings.isDarkModeOn ? "white" : "#3c5063" }}>
-        {label}
-      </Text>
-      <Rating
-        minValue={0}
-        fractions={0}
-        startingValue={startingValue ?? ratingCount / 2}
-        onFinishRating={handleRatingChange}
-        imageSize={imageSize}
-        type={type}
-        tintColor={settings.isDarkModeOn ? "#3c5063" : "#f2f2f2"}
-        ratingCount={ratingCount}
-      />
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            color: settings.isDarkModeOn ? "white" : "#3c5063",
+            marginLeft: 45,
+          }}
+        >
+          {label}
+        </Text>
+      </View>
+      <View style={{ flex: 1 }}>
+        <Rating
+          minValue={0}
+          fractions={0}
+          startingValue={startingValue ?? ratingCount / 2}
+          onFinishRating={handleRatingChange}
+          imageSize={imageSize}
+          type={type}
+          ratingColor="#e0dfdc"
+          tintColor={settings.isDarkModeOn ? "#3c5063" : "#f2f2f2"}
+          ratingCount={ratingCount}
+        />
+      </View>
     </View>
   );
 }

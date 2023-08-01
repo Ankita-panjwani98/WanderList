@@ -10,6 +10,7 @@ import {
   Platform,
   Image,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import useDataContext from "../../context/DataContext";
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingTop: 40,
     borderRadius: 10,
-    height: 400,
+    height: 430,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingTop: 40,
     borderRadius: 10,
-    height: 400,
+    height: 430,
     ...Platform.select({
       ios: {
         shadowColor: "black",
@@ -233,7 +234,11 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
   };
 
   return (
-    <View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}
+    >
       <TouchableOpacity
         onPress={() => router.push("settingsHelpModal")}
         style={{
@@ -249,10 +254,10 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
       <View
         style={{
           backgroundColor: settings.isDarkModeOn ? "#3c5063" : "#f2f2f2",
-          height: 900,
+          height: 1500,
         }}
       >
-        <View style={{ alignItems: "center", marginTop: 130 }}>
+        <View style={{ alignItems: "center", marginTop: 80 }}>
           <Image
             source={SettingsImage}
             style={{ width: 250, height: 140, marginBottom: 10 }}
@@ -349,7 +354,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
               Dark Mode:
             </Text>
             <Switch
-              trackColor={{ false: "#FAF9F6", true: "#c5cad1" }}
+              trackColor={{ false: "#e0dfdc", true: "#c5cad1" }}
               thumbColor={settings.isDarkModeOn ? "green" : "grey"}
               // ios_backgroundColor="#3e3e3e"
               onValueChange={handleDarkMode}
@@ -373,6 +378,6 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
           )}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

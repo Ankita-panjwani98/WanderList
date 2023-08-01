@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
     padding: 10,
     borderRadius: 10,
+    marginLeft: 8,
+    marginRight: 8,
     height: "auto",
     ...Platform.select({
       ios: {
@@ -63,6 +65,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#617287",
     padding: 10,
     borderRadius: 10,
+    marginLeft: 8,
+    marginRight: 8,
     height: "auto",
     ...Platform.select({
       ios: {

@@ -26,7 +26,7 @@
       "package": "com.ankitapanjwani.wanderlist",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCWDApxY413T92k40jFXYWmQAd91FiMPq4"
+          "apiKey": "AIzaSyATaYufBV7vu9mvare5Mq0iIq2I0EnP5ig"
         }
       }
     },
@@ -35,7 +35,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "extra": {
-      "eas": {}
+      "eas": {
+      }
     }
   }
 }
