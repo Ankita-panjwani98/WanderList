@@ -1,5 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet, View, Text } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 import useDataContext from "../context/DataContext";
 
 const styles = StyleSheet.create({
@@ -23,6 +31,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     color: "black",
     marginTop: 50,
+    fontFamily: "Montserrat",
   },
   titleDark: {
     fontSize: 20,
@@ -30,26 +39,46 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     color: "white",
     marginTop: 50,
+    fontFamily: "Montserrat",
   },
 });
 
 export default function SettingsInfoModal() {
   const { settings } = useDataContext();
+  const router = useRouter();
 
+  const handleCancel = () => {
+    router.back();
+  };
   return (
     <View
       style={settings.isDarkModeOn ? styles.containerDark : styles.container}
     >
+      <TouchableOpacity onPress={handleCancel}>
+        <Text
+          style={{
+            color: settings.isDarkModeOn ? "white" : "black",
+            padding: 10,
+            textAlign: "left",
+          }}
+        >
+          <AntDesign name="caretleft" size={24} color="white" />
+        </Text>
+      </TouchableOpacity>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       <View>
         <Text style={settings.isDarkModeOn ? styles.titleDark : styles.title}>
           Visited Distance Threshold
         </Text>
-        <Text> ______________________________________ </Text>
+        <Text style={{ color: settings.isDarkModeOn ? "white" : "darkgrey" }}>
+          {" "}
+          ______________________________________{" "}
+        </Text>
         <Text
           style={{
             color: settings.isDarkModeOn ? "white" : "black",
             marginTop: 20,
+            fontFamily: "Montserrat",
           }}
         >
           When WanderList is opened, it checks your current location and
