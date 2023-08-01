@@ -299,39 +299,41 @@ export default function ListTab() {
           />
         )}
 
-        {filterOptions.map((filter) => (
-          <TouchableOpacity
-            key={filter.value}
-            onPress={() => updateFilterBy(filter.value)}
-            style={{
-              borderWidth: 0.5,
-              borderColor: settings.isDarkModeOn
-                ? filter.value === filterBy
-                  ? "#e3b836"
-                  : "white"
-                : filter.value === filterBy
-                ? "green"
-                : "grey",
-              margin: 10,
-              padding: 5,
-              borderRadius: 10,
-            }}
-          >
-            <Text
+        <ScrollView horizontal>
+          {filterOptions.map((filter) => (
+            <TouchableOpacity
+              key={filter.value}
+              onPress={() => updateFilterBy(filter.value)}
               style={{
-                color: settings.isDarkModeOn
+                borderWidth: 0.5,
+                borderColor: settings.isDarkModeOn
                   ? filter.value === filterBy
                     ? "#e3b836"
                     : "white"
                   : filter.value === filterBy
                   ? "green"
                   : "grey",
+                margin: 10,
+                padding: 5,
+                borderRadius: 10,
               }}
             >
-              {filter.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={{
+                  color: settings.isDarkModeOn
+                    ? filter.value === filterBy
+                      ? "#e3b836"
+                      : "white"
+                    : filter.value === filterBy
+                    ? "green"
+                    : "grey",
+                }}
+              >
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <View style={{ borderColor: "lightgrey", borderBottomWidth: 0.5 }} />
