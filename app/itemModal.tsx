@@ -21,6 +21,8 @@ import { IconGreen, IconGrey } from "../components/Media";
 import generateUUID from "../utils/generateUUID";
 import TagAutocomplete from "../components/TagAutocomplete";
 import Tag from "../DB/Tag";
+import getCurrentPositionAsync from "../utils/getCurrentPositionAsync";
+import getDistanceBetweenPoints from "../utils/getDistanceBetweenPoints";
 
 const styles = StyleSheet.create({
   container: {
@@ -67,8 +69,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    width: "80%",
+    marginTop: 20,
     marginBottom: 10,
-    width: 300,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -161,7 +164,7 @@ export default function ItemModal() {
     setListTag(updatedListTag);
   }, [bucketList.items]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setError("");
 
     if (!address) {
@@ -180,7 +183,9 @@ export default function ItemModal() {
       setListTag([...listTag, newTag]);
     }
 
-    const newItem = {
+    const location = await getCurrentPositionAsync();
+
+    const newItem: Item = {
       id: item?.id ?? generateUUID(),
       createdOn: item?.createdOn ?? Date.now(),
       title: title || address,
@@ -192,6 +197,9 @@ export default function ItemModal() {
       priority,
       favourite,
       tag,
+      distance: location
+        ? getDistanceBetweenPoints(location.coords, coordinates)
+        : 0,
       updatedOn: Date.now(),
     };
 
@@ -388,10 +396,7 @@ export default function ItemModal() {
           <Text style={{ color: settings.isDarkModeOn ? "white" : "#3c5063" }}>
             Visited:
           </Text>
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => setHasVisited(!hasVisited)}
-          >
+          <TouchableOpacity onPress={() => setHasVisited(!hasVisited)}>
             {hasVisited ? (
               <Image
                 source={IconGreen}

@@ -28,7 +28,7 @@ function CustomRating({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        width: 300,
+        width: "80%",
         marginTop: 20,
       }}
     >

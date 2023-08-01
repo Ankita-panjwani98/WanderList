@@ -84,8 +84,6 @@ export default function MapTab() {
 
   const lightModeStyle: MapStyleElement[] | undefined = [];
 
-  // Request permission if not granted for first time when app opened
-  // Show alert if denied
   useEffect(() => {
     requestLocationPermission().then((granted) => {
       if (!granted) {
