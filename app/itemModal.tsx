@@ -261,7 +261,7 @@ export default function ItemModal() {
               size={30}
               style={{ marginBottom: -3 }}
               name="trash"
-              color="red"
+              color="#c95353"
             />
           </TouchableOpacity>
         ) : null}
@@ -317,7 +317,7 @@ export default function ItemModal() {
         />
 
         <TextInput
-          style={styles.input}
+          style={settings.isDarkModeOn ? styles.inputDark : styles.input}
           value={description}
           onChangeText={setDescription}
           placeholder="Description"

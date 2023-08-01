@@ -32,12 +32,11 @@ export default function OnBoardingScreen() {
       onSkip={handleSkip}
       titleStyles={{
         marginTop: -100,
-        fontFamily: "Calibri",
-        fontWeight: "bold",
+        fontFamily: "Montserrat",
         padding: 10,
       }}
       subTitleStyles={{
-        marginTop: -30,
+        marginTop: -8,
         lineHeight: 30,
         width: 350,
         fontFamily: "Montserrat",
