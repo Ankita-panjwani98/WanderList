@@ -5,8 +5,8 @@ import useDataContext from "../context/DataContext";
 type CustomRatingProps = {
   label: string;
   type: "star" | "heart" | "bell" | "rocket";
-  ratingCount: 1 | 2 | 3 | 4 | 5;
-  startingValue?: 0 | 1 | 2 | 3 | 4 | 5;
+  ratingCount: number;
+  startingValue?: number;
   imageSize?: number;
   handleRatingChange: (r: number) => void;
 };

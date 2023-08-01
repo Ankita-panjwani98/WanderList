@@ -26,6 +26,8 @@ class Item {
 
   updatedOn?: number;
 
+  distance?: number; // distance in km from current location
+
   constructor(item: Item) {
     this.id = item.id;
 

@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   Text,
+  FlatList,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import useDataContext from "../context/DataContext";
@@ -128,7 +129,7 @@ function TagAutocomplete({
           style={settings.isDarkModeOn ? styles.inputDark : styles.input}
           value={inputValue}
           onChangeText={handleInputChange}
-          placeholder="Type a tag..."
+          placeholder="Add a tag..."
           placeholderTextColor={settings.isDarkModeOn ? "white" : "lightgray"}
         />
         {inputValue.length > 0 && (
