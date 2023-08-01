@@ -33,14 +33,6 @@ const filterOptions = [
   { label: "Unvisited", value: "unvisited" },
 ];
 
-const convertToTagArray = (
-  options: { label: string | undefined; value: string | undefined }[]
-) => {
-  return options.map((option) => ({
-    id: option.value || "", // Using empty string as default value for 'id'
-    name: option.label || "", // Using empty string as default value for 'name'
-  }));
-};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -126,7 +118,7 @@ export default function ListTab() {
     [bucketList.items]
   );
 
-  const tagOptions = useMemo(
+  const tagOptionsiOS = useMemo(
     () =>
       tagList.map((tag) => ({
         label: tag,
@@ -135,10 +127,13 @@ export default function ListTab() {
     [tagList]
   );
 
-  // Convert the tagOptions to Tag[] using the utility function
-  const tagOptionsConverted = useMemo(
-    () => convertToTagArray(tagOptions),
-    [tagOptions]
+  const tagOptionsAndroid = useMemo(
+    () =>
+      tagList.map((tag) => ({
+        id: tag as string,
+        name: tag as string,
+      })),
+    [tagList]
   );
 
   const [sortBy, setSortBy] = useState<string>(sortOptions[0].value);
@@ -192,7 +187,7 @@ export default function ListTab() {
   const sortedItems = filteredItems.sort((a, b) => {
     switch (sortBy) {
       case "priority":
-        return (a.priority ?? 0) - (b.priority ?? 0);
+        return (b.priority ?? 0) - (a.priority ?? 0);
       case "rating":
         return (b.rating ?? 0) - (a.rating ?? 0);
       case "distance":
@@ -205,6 +200,10 @@ export default function ListTab() {
             currentLocation.coords,
             b.coordinates
           );
+          // eslint-disable-next-line no-param-reassign
+          a.distance = distance1;
+          // eslint-disable-next-line no-param-reassign
+          b.distance = distance2;
           return distance1 - distance2;
         }
         return 0;
@@ -257,10 +256,9 @@ export default function ListTab() {
           Filter By |{" "}
         </Text>
 
-        {/* Render CustomPicker for Android and RNPickerSelect for iOS */}
         {Platform.OS === "android" ? (
           <CustomPicker
-            listTag={tagOptionsConverted}
+            listTag={tagOptionsAndroid}
             selectedTag={tagFilterValue()}
             onTagsChange={(value) => setFilterBy(value)}
           />
@@ -269,14 +267,13 @@ export default function ListTab() {
             onValueChange={(value) => setFilterBy(value)}
             items={[
               { value: "none", label: "Tag" },
-              ...(tagOptions as { label: string; value: string }[]),
+              ...(tagOptionsiOS as { label: string; value: string }[]),
             ]}
             value={tagFilterValue()}
-            disabled={tagOptions.length === 0}
+            disabled={tagOptionsiOS.length === 0}
             style={{
               viewContainer: {
                 borderWidth: 0.5,
-                // eslint-disable-next-line no-nested-ternary
                 borderColor: settings.isDarkModeOn
                   ? tagFilterValue() !== "none"
                     ? "#e3b836"
@@ -290,7 +287,6 @@ export default function ListTab() {
                 borderRadius: 10,
               },
               inputIOS: {
-                // eslint-disable-next-line no-nested-ternary
                 color: settings.isDarkModeOn
                   ? tagFilterValue() !== "none"
                     ? "#e3b836"
@@ -309,7 +305,6 @@ export default function ListTab() {
             onPress={() => updateFilterBy(filter.value)}
             style={{
               borderWidth: 0.5,
-              // eslint-disable-next-line no-nested-ternary
               borderColor: settings.isDarkModeOn
                 ? filter.value === filterBy
                   ? "#e3b836"
@@ -324,7 +319,6 @@ export default function ListTab() {
           >
             <Text
               style={{
-                // eslint-disable-next-line no-nested-ternary
                 color: settings.isDarkModeOn
                   ? filter.value === filterBy
                     ? "#e3b836"
@@ -342,14 +336,26 @@ export default function ListTab() {
 
       <View style={{ borderColor: "lightgrey", borderBottomWidth: 0.5 }} />
 
-      {sortedItems?.length > 0 ? (
+      {bucketList.items.length === 0 ? (
+        <View
+          style={
+            settings.isDarkModeOn
+              ? styles.emptyListViewDarkMode
+              : styles.emptyListView
+          }
+        >
+          <Text style={{ color: settings.isDarkModeOn ? "white" : "grey" }}>
+            Add a new item by pressing the + icon on bottom right
+          </Text>
+        </View>
+      ) : sortedItems?.length > 0 ? (
         <ScrollView style={styles.container}>
           {sortedItems.map((item: Item) => (
             <TouchableOpacity
               key={item.id}
               onPress={() => handleEditItem(item)}
             >
-              <BucketListItem item={item} />
+              <BucketListItem item={item} sort={sortBy} filter={filterBy} />
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -362,18 +368,10 @@ export default function ListTab() {
           }
         >
           <Text style={{ color: settings.isDarkModeOn ? "white" : "grey" }}>
-            Add a new item by pressing the + icon on bottom right
+            No items to show for selected filter!
           </Text>
         </View>
       )}
-
-      {bucketList.items.length === 0 ? (
-        <View style={styles.emptyListView}>
-          <Text style={{ color: "grey" }}>
-            Add a new item by pressing the + icon on bottom right
-          </Text>
-        </View>
-      ) : null}
 
       <TouchableOpacity
         style={

@@ -1,10 +1,9 @@
-import React from "react";
+// eslint-disable no-nested-ternary
 import { View, Text, StyleSheet, Image } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Item from "../DB/Item";
 import useDataContext from "../context/DataContext";
 import getIconForItem from "../utils/getIconForItem";
-import CustomRating from "../components/CustomRating";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -32,8 +31,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    flexDirection: "row", // Display the main content in a row
-    alignItems: "flex-start", // Align items to the top of the container
   },
   itemDetailsContainer: {
     flex: 1, // Let the details container take all the available width
@@ -96,24 +93,62 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 4,
   },
-  // Add a new style for the container holding rating and priority icons
-  topRightContainer: {
-    alignItems: "flex-end", // Align the icons to the right
-  },
 });
 
-export default function BucketListItem({ item }: { item: Item }) {
-  const { settings } = useDataContext();
-  // Ensure that item.rating and item.priority are within the range of {0, 1, 2, 3, 4, 5}
-  const rating =
-    item.rating !== undefined ? Math.max(0, Math.min(item.rating, 5)) : 0;
-  const priority =
-    item.priority !== undefined ? Math.max(0, Math.min(item.priority, 3)) : 0;
+function SortIcon({
+  sort,
+  item,
+  isDarkModeOn,
+}: {
+  sort?: string;
+  item: Item;
+  isDarkModeOn: boolean;
+}) {
+  if (sort === "createdOn") return null;
 
-  const handleRatingChange = (newRating: number) => {
-    // Implement any logic related to handling the rating change here
-    console.log("New rating:", newRating);
-  };
+  const borderColor =
+    sort === "priority"
+      ? "orange"
+      : sort === "rating"
+      ? "red"
+      : isDarkModeOn
+      ? "lightgrey"
+      : "grey";
+
+  return (
+    <View
+      style={{
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 500,
+        borderColor,
+      }}
+    >
+      {sort === "priority" ? (
+        <Text style={{ color: "orange" }}>{item.priority}</Text>
+      ) : null}
+
+      {sort === "rating" ? (
+        <Text style={{ color: "red" }}>{item.rating}</Text>
+      ) : null}
+
+      {sort === "distance" ? (
+        <Text style={{ color: isDarkModeOn ? "lightgrey" : "grey" }}>
+          {Math.round(item.distance || 0)} km
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
+export default function BucketListItem({
+  item,
+  sort,
+}: {
+  item: Item;
+  sort: string;
+}) {
+  const { settings } = useDataContext();
 
   return (
     <View
@@ -122,54 +157,34 @@ export default function BucketListItem({ item }: { item: Item }) {
       }
     >
       <View style={styles.itemSubContainer}>
+        <Image
+          source={getIconForItem(item)}
+          style={{ width: 50, height: 50, marginRight: 10 }}
+        />
         <View style={styles.itemDetailsContainer}>
-          <Image
-            source={getIconForItem(item)}
-            style={{ width: 50, height: 50, marginRight: 10 }}
-          />
-          <View>
-            <Text
-              style={settings.isDarkModeOn ? styles.titleDark : styles.title}
-            >
-              {item.title}
-            </Text>
-            <Text
-              style={
-                settings.isDarkModeOn ? styles.locationDark : styles.location
-              }
-            >
-              {item.address}
-            </Text>
-          </View>
-          {/* Rating and priority icons */}
-          <View style={styles.topRightContainer}>
-            {item.favourite && (
-              <View style={styles.favouriteContainer}>
-                <FontAwesome name="star" size={20} color="orange" />
-              </View>
-            )}
-            <View style={styles.ratingContainer}>
-              <CustomRating
-                type="heart"
-                handleRatingChange={handleRatingChange} // Update the handleRatingChange function
-                label=""
-                ratingCount={5}
-                startingValue={rating as 0 | 1 | 2 | 3 | 4 | 5 | undefined}
-                imageSize={18}
-              />
-            </View>
-            <View style={styles.ratingContainer}>
-              <CustomRating
-                type="bell"
-                handleRatingChange={handleRatingChange} // Update the handleRatingChange function
-                label=""
-                ratingCount={3}
-                startingValue={priority as 0 | 1 | 2 | 3 | undefined}
-                imageSize={18}
-              />
-            </View>
-          </View>
+          <Text style={settings.isDarkModeOn ? styles.titleDark : styles.title}>
+            {item.title}
+          </Text>
+          <Text
+            style={
+              settings.isDarkModeOn ? styles.locationDark : styles.location
+            }
+          >
+            {item.address}
+          </Text>
         </View>
+
+        <View style={{ margin: 5 }}>
+          {item.favourite ? (
+            <FontAwesome size={30} name="star" color="orange" />
+          ) : null}
+        </View>
+
+        <SortIcon
+          sort={sort}
+          item={item}
+          isDarkModeOn={settings.isDarkModeOn}
+        />
       </View>
     </View>
   );

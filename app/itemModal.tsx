@@ -157,7 +157,7 @@ export default function ItemModal() {
     );
     const updatedListTag = uniqueTags
       .filter((name) => typeof name === "string")
-      .map((name) => new Tag({ id: generateUUID(), name: name! }));
+      .map((name) => new Tag({ id: generateUUID(), name: name ?? "default" }));
     setListTag(updatedListTag);
   }, [bucketList.items]);
 
@@ -209,7 +209,7 @@ export default function ItemModal() {
 
     setBucketList(updatedList);
 
-    router.push("MapTab");
+    router.back();
   };
 
   const handleDeleteItem = (i: Item) => {
@@ -293,7 +293,7 @@ export default function ItemModal() {
             color: settings.isDarkModeOn ? "white" : "#3c5063",
           }}
         >
-          Add Item
+          Item Details
         </Text>
         <Text
           style={{
@@ -366,12 +366,14 @@ export default function ItemModal() {
           onTagsChange={setTag}
         />
       </View>
+
       <View style={settings.isDarkModeOn ? styles.ratingsDark : styles.ratings}>
         <CustomRating
           type="bell"
           handleRatingChange={(p) => setPriority(p)}
           label="Priority:"
           ratingCount={3}
+          startingValue={item?.priority}
         />
 
         <CustomRating
@@ -379,6 +381,7 @@ export default function ItemModal() {
           handleRatingChange={(r) => setRating(r)}
           label="Rating:"
           ratingCount={5}
+          startingValue={item?.rating}
         />
 
         <View style={styles.switchContainer}>

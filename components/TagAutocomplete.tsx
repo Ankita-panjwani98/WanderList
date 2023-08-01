@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   Text,
+  FlatList,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import useDataContext from "../context/DataContext";
@@ -75,7 +76,7 @@ function TagAutocomplete({
   onTagsChange: (tagName: string) => void;
 }) {
   const { settings } = useDataContext();
-  
+
   const [inputValue, setInputValue] = useState(selectedTag);
   const [filteredTagsByInput, setFilteredTagsByInput] = useState<Tag[]>([]);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
@@ -144,7 +145,7 @@ function TagAutocomplete({
           ]}
           value={inputValue}
           onChangeText={handleInputChange}
-          placeholder="Type a tag..."
+          placeholder="Add a tag..."
           placeholderTextColor={settings.isDarkModeOn ? "white" : "lightgray"}
         />
         {inputValue.length > 0 && (

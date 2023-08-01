@@ -21,6 +21,9 @@ const styles = StyleSheet.create({
   radioIndicatorSelected: {
     backgroundColor: "#3cb371",
   },
+  radioIndicatorSelectedDark: {
+    backgroundColor: "#e3b836",
+  },
   radioLabel: {
     fontSize: 12,
     color: "#333",
@@ -60,7 +63,10 @@ export default function RadioButton({
           <View
             style={[
               styles.radioIndicator,
-              option.value === selectedOption && styles.radioIndicatorSelected,
+              option.value === selectedOption &&
+                (settings.isDarkModeOn
+                  ? styles.radioIndicatorSelectedDark
+                  : styles.radioIndicatorSelected),
             ]}
           />
           <Text

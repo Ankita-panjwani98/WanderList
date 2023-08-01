@@ -71,7 +71,9 @@ function CustomPicker({
       }}
     >
       <TouchableOpacity onPress={handleModalToggle}>
-        <Text style={{ color: textColor }}>{selectedTag || "Tag"}</Text>
+        <Text style={{ color: textColor }}>
+          {selectedTag !== "none" ? selectedTag : "Tag"}
+        </Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
