@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -17,6 +18,7 @@ import Item from "../../DB/Item";
 import RadioButton from "../../components/RadioButton";
 import getCurrentPositionAsync from "../../utils/getCurrentPositionAsync";
 import getDistanceBetweenPoints from "../../utils/getDistanceBetweenPoints";
+import CustomPicker from "../../components/CustomPicker";
 
 const sortOptions = [
   { label: "Created", value: "createdOn" },
@@ -31,6 +33,14 @@ const filterOptions = [
   { label: "Unvisited", value: "unvisited" },
 ];
 
+const convertToTagArray = (
+  options: { label: string | undefined; value: string | undefined }[]
+) => {
+  return options.map((option) => ({
+    id: option.value || "", // Using empty string as default value for 'id'
+    name: option.label || "", // Using empty string as default value for 'name'
+  }));
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,6 +133,12 @@ export default function ListTab() {
         value: tag,
       })),
     [tagList]
+  );
+
+  // Convert the tagOptions to Tag[] using the utility function
+  const tagOptionsConverted = useMemo(
+    () => convertToTagArray(tagOptions),
+    [tagOptions]
   );
 
   const [sortBy, setSortBy] = useState<string>(sortOptions[0].value);
@@ -241,52 +257,51 @@ export default function ListTab() {
           Filter By |{" "}
         </Text>
 
-        <RNPickerSelect
-          onValueChange={(value) => setFilterBy(value)}
-          items={[
-            { value: "none", label: "Tag" },
-            ...(tagOptions as { label: string; value: string }[]),
-          ]}
-          value={tagFilterValue()}
-          disabled={tagOptions.length === 0}
-          style={{
-            viewContainer: {
-              borderWidth: 0.5,
-              // eslint-disable-next-line no-nested-ternary
-              borderColor: settings.isDarkModeOn
-                ? tagFilterValue() !== "none"
-                  ? "#e3b836"
-                  : "white"
-                : tagFilterValue() !== "none"
-                ? "green"
-                : "grey",
-              borderStyle: "dotted",
-              margin: 10,
-              padding: 5,
-              borderRadius: 10,
-            },
-            inputAndroid: {
-              // eslint-disable-next-line no-nested-ternary
-              color: settings.isDarkModeOn
-                ? tagFilterValue() !== "none"
-                  ? "#e3b836"
-                  : "white"
-                : tagFilterValue() !== "none"
-                ? "green"
-                : "grey",
-            },
-            inputIOS: {
-              // eslint-disable-next-line no-nested-ternary
-              color: settings.isDarkModeOn
-                ? tagFilterValue() !== "none"
-                  ? "#e3b836"
-                  : "white"
-                : tagFilterValue() !== "none"
-                ? "green"
-                : "grey",
-            },
-          }}
-        />
+        {/* Render CustomPicker for Android and RNPickerSelect for iOS */}
+        {Platform.OS === "android" ? (
+          <CustomPicker
+            listTag={tagOptionsConverted}
+            selectedTag={tagFilterValue()}
+            onTagsChange={(value) => setFilterBy(value)}
+          />
+        ) : (
+          <RNPickerSelect
+            onValueChange={(value) => setFilterBy(value)}
+            items={[
+              { value: "none", label: "Tag" },
+              ...(tagOptions as { label: string; value: string }[]),
+            ]}
+            value={tagFilterValue()}
+            disabled={tagOptions.length === 0}
+            style={{
+              viewContainer: {
+                borderWidth: 0.5,
+                // eslint-disable-next-line no-nested-ternary
+                borderColor: settings.isDarkModeOn
+                  ? tagFilterValue() !== "none"
+                    ? "#e3b836"
+                    : "white"
+                  : tagFilterValue() !== "none"
+                  ? "green"
+                  : "grey",
+                borderStyle: "dotted",
+                margin: 10,
+                padding: 5,
+                borderRadius: 10,
+              },
+              inputIOS: {
+                // eslint-disable-next-line no-nested-ternary
+                color: settings.isDarkModeOn
+                  ? tagFilterValue() !== "none"
+                    ? "#e3b836"
+                    : "white"
+                  : tagFilterValue() !== "none"
+                  ? "green"
+                  : "grey",
+              },
+            }}
+          />
+        )}
 
         {filterOptions.map((filter) => (
           <TouchableOpacity
