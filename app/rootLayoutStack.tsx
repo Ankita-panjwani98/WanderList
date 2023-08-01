@@ -18,11 +18,11 @@ export default function RootLayoutStack() {
       />
       <Stack.Screen
         name="statisticsHelpModal"
-        options={{ headerTitle: "Statistics Help", presentation: "modal" }}
+        options={{ headerShown: false, presentation: "modal" }}
       />
       <Stack.Screen
         name="settingsHelpModal"
-        options={{ headerTitle: "Settings Help", presentation: "modal" }}
+        options={{ headerShown: false, presentation: "modal" }}
       />
     </Stack>
   );

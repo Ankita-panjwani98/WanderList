@@ -93,6 +93,12 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
+    textAlign: "center",
+  },
+  errorTextDark: {
+    fontSize: 12,
+    color: "#f5a889",
+    textAlign: "center",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -227,13 +233,7 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
   };
 
   return (
-    <>
-      {error ? (
-        <View style={styles.container}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      ) : null}
-
+    <View>
       <TouchableOpacity
         onPress={() => router.push("settingsHelpModal")}
         style={{
@@ -356,8 +356,23 @@ and ${settings.MAX_VISITED_DISTANCE}; use 0 to disable this feature!`
               value={settings.isDarkModeOn}
             />
           </View>
+          {error ? (
+            <View>
+              <Text
+                style={
+                  settings.isDarkModeOn
+                    ? styles.errorTextDark
+                    : styles.errorText
+                }
+              >
+                {error}
+              </Text>
+            </View>
+          ) : (
+            ""
+          )}
         </View>
       </View>
-    </>
+    </View>
   );
 }

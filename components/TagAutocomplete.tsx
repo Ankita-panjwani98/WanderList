@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -13,10 +13,8 @@ import Tag from "../DB/Tag";
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    flex: 0,
+    width: "80%",
+    alignItems: "flex-start",
   },
   inputContainer: {
     flexDirection: "row",
@@ -75,7 +73,6 @@ function TagAutocomplete({
   onTagsChange: (tagName: string) => void;
 }) {
   const { settings } = useDataContext();
-  
   const [inputValue, setInputValue] = useState(selectedTag);
   const [filteredTagsByInput, setFilteredTagsByInput] = useState<Tag[]>([]);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
@@ -109,16 +106,6 @@ function TagAutocomplete({
     onTagsChange(""); // Clear the selected tag
     setSuggestionVisible(false); // Hide the suggestion container
   };
-
-  const renderSuggestionItem = ({ item }: { item: Tag }) => (
-    <TouchableOpacity
-      style={styles.suggestionItem}
-      onPress={() => handleTagSelect(item)}
-    >
-      <Text>{item.name}</Text>
-    </TouchableOpacity>
-  );
-
   useEffect(() => {
     // Calculate filteredTags inside the useEffect
     const allTags = [
@@ -138,10 +125,7 @@ function TagAutocomplete({
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
-          style={[
-            styles.input,
-            { color: settings.isDarkModeOn ? "white" : "lightgray" },
-          ]}
+          style={settings.isDarkModeOn ? styles.inputDark : styles.input}
           value={inputValue}
           onChangeText={handleInputChange}
           placeholder="Type a tag..."
@@ -154,12 +138,28 @@ function TagAutocomplete({
         )}
       </View>
       {suggestionVisible && (
-        <View style={styles.suggestionContainer}>
-          <FlatList
-            data={filteredTagsByInput}
-            renderItem={renderSuggestionItem}
-            keyExtractor={(item) => item.id}
-          />
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          {filteredTagsByInput.length > 0
+            ? filteredTagsByInput.map((item) => {
+                return (
+                  <TouchableOpacity
+                    style={{
+                      padding: 10,
+                      backgroundColor: settings.isDarkModeOn
+                        ? "#ceebdb"
+                        : "#c1d0de",
+                      borderRadius: 20,
+                      marginTop: 20,
+                      marginRight: 10,
+                    }}
+                    key={item.id}
+                    onPress={() => handleTagSelect(item)}
+                  >
+                    <Text>{item.name}</Text>
+                  </TouchableOpacity>
+                );
+              })
+            : null}
         </View>
       )}
     </View>
